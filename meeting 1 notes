@@ -1,0 +1,33 @@
+Week 1 meeting notes
+
+  1. dev understanding of project
+  2. who will take on various roles
+  3. agree on regular meetings
+  4. Consider some epics and tasks that constitute the project
+  5. resrources ( gaps in knowledge)
+  
+  
+  
+EPICS
+ -Intuitive menu
+    - difficulty (maybe depending on algorithm capabilities)
+        - time based
+        - # moves
+        - puzzle itself
+    - sound
+    - start
+    - tutorial
+    - map style
+    
+-Game mechanics
+    - square map (fixed total size)
+    - array implementation
+    -item pick up
+    
+-Game style
+    -overall theme
+        -minimalistic
+        -
+    -character sprites
+    -
+ 
