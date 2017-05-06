@@ -91,4 +91,8 @@ public class GameState{
     private boolean move_right() {
         return true;
     }
+
+    public int[][] getMaze() {
+        return this.maze;
+    }
 }
