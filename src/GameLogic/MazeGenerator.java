@@ -41,6 +41,7 @@ public class MazeGenerator {
 
     /**
      * READS FILE AND GENERATE MAZE.
+     * SPLITS ON WHITE SPACE A.K.A MAZE FILES HAVE TO BE SPACE SEPARATED
      * TODO: More test mazes (at least 3 mazes)
      * @param file_name
      * @return
@@ -60,7 +61,7 @@ public class MazeGenerator {
 
         int[][] loc_maze = new int[input.size()][input.size()];
         for (int i = 0; i < input.size(); i++) {
-            String[] blocks = input.get(i).split(".");
+            String[] blocks = input.get(i).split("\\s+");
             for (int j = 0; j < blocks.length; j++) {
                 int curr_block = Integer.parseInt(blocks[j]);
                 if (curr_block == 1) player_location = new int[] {i, j};
