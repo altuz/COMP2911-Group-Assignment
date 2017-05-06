@@ -12,6 +12,13 @@ public class MazeGenerator {
     int[]   player_location;
     int[][] target;
 
+    /**
+     * CHECK OBJECT TYPE AND CALLS THE RESPECTIVE FUNCTION
+     * Generate maze randomly if given an Integer
+     * Generate maze from file if given a String
+     * TODO: Random Generation
+     * @param o
+     */
     public MazeGenerator(Object o) {
         if (o instanceof Integer) {
             this.maze = generateRandom((Integer) o);
@@ -21,12 +28,23 @@ public class MazeGenerator {
         }
     }
 
+    /**
+     * TODO: Whole Function
+     * @param size
+     * @return
+     */
     private int[][] generateRandom(Integer size) {
         int[][] loc_maze = new int[][] { {1, 0}, {0, 0} };
         this.player_location = new int[] {0, 1};
         return loc_maze;
     }
 
+    /**
+     * READS FILE AND GENERATE MAZE.
+     * TODO: More test mazes (at least 3 mazes)
+     * @param file_name
+     * @return
+     */
     private int[][] generateFromFile(String file_name) {
         ArrayList<String> input = new ArrayList<String>();
         try {
@@ -53,10 +71,18 @@ public class MazeGenerator {
         return loc_maze;
     }
 
+    /**
+     * Returns maze
+     * @return
+     */
     public int[][] getMaze() {
         return this.maze;
     }
 
+    /**
+     * Returns player location
+     * @return
+     */
     public int[] getPlayer() {
         return this.player_location;
     }
