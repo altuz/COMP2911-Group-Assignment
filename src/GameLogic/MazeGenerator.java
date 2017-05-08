@@ -8,10 +8,10 @@ import java.util.Scanner;
  * Created by altuz on 6/05/17.
  */
 public class MazeGenerator {
-    int[][] maze;
-    int[]   player_location;
-    int[][] target;
-    ArrayList<Integer> end_blocks;
+    private int[][] maze;
+    private int[]   player_location;
+    private int[][] target;
+    private ArrayList<int[]> end_blocks;
 
     /**
      * CHECK OBJECT TYPE AND CALLS THE RESPECTIVE FUNCTION
@@ -21,7 +21,7 @@ public class MazeGenerator {
      * @param o
      */
     public MazeGenerator(Object o) {
-        end_blocks = new ArrayList<Integer>();
+        end_blocks = new ArrayList<int[]>();
         if (o instanceof Integer) {
             this.maze = generateRandom((Integer) o);
         }
@@ -67,9 +67,13 @@ public class MazeGenerator {
             for (int j = 0; j < blocks.length; j++) {
                 int curr_block = Integer.parseInt(blocks[j]);
                 switch (curr_block) {
-                    case 1:
+                    case 1: player_location = new int[] {i, j};
+                            break;
+                    case 3:
+                    case 4:
+                    case 5: end_blocks.add(new int[] {i, j});
+                    default:
                 }
-                if (curr_block == 1) player_location = new int[] {i, j};
                 loc_maze[i][j] = curr_block;
             }
         }
@@ -91,5 +95,13 @@ public class MazeGenerator {
      */
     public int[] getPlayer() {
         return this.player_location;
+    }
+
+    /**
+     * Return goal locations
+     * @return
+     */
+    public ArrayList<int[]> getGoals() {
+        return this.end_blocks;
     }
 }

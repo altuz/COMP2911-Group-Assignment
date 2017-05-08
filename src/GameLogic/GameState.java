@@ -1,5 +1,6 @@
 package GameLogic;
 import Definitions.Movement;
+import java.util.ArrayList;
 
 /**
  * Created by Nicholas Mulianto and James Ren on 6/05/17.
@@ -9,7 +10,7 @@ public class GameState{
     private int move_count;
     private int[] player_loc;
     private int[][] maze;
-
+    private ArrayList<int[]> goal_blocks;
     /**
      * Creates a new level and initialize player location.
      * If given an int, randomly generates maze.
@@ -24,9 +25,17 @@ public class GameState{
         MazeGenerator level = new MazeGenerator(o);
         this.maze       = level.getMaze();
         this.player_loc = level.getPlayer();
-
+        this.goal_blocks= level.getGoals();
     }
 
+    public boolean game_over() {
+        for (int[] coords : this.goal_blocks) {
+            int x = coords[0];
+            int y = coords[1];
+            if (this.maze[x][y] != 5) return false;
+        }
+        return true;
+    }
     /**
      * Moves the player based on direction.
      * Usage: player_move(Movement.UP);
@@ -373,7 +382,7 @@ public class GameState{
             return false;
         }
 
-        int blockNum = this.maze[rowNum][columnNum-1]; // gets the block status to the left of player's position
+        int blockNum = this.maze[rowNum][columnNum+1]; // gets the block status to the left of player's position
 		/*
 		 * Gets the tile that the player current standing on:
 		 * -> 1 == player is currently standing on a blank tile
