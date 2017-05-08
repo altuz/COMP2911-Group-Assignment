@@ -11,6 +11,7 @@ public class MazeGenerator {
     int[][] maze;
     int[]   player_location;
     int[][] target;
+    ArrayList<Integer> end_blocks;
 
     /**
      * CHECK OBJECT TYPE AND CALLS THE RESPECTIVE FUNCTION
@@ -20,6 +21,7 @@ public class MazeGenerator {
      * @param o
      */
     public MazeGenerator(Object o) {
+        end_blocks = new ArrayList<Integer>();
         if (o instanceof Integer) {
             this.maze = generateRandom((Integer) o);
         }
@@ -64,6 +66,9 @@ public class MazeGenerator {
             String[] blocks = input.get(i).split("\\s+");
             for (int j = 0; j < blocks.length; j++) {
                 int curr_block = Integer.parseInt(blocks[j]);
+                switch (curr_block) {
+                    case 1:
+                }
                 if (curr_block == 1) player_location = new int[] {i, j};
                 loc_maze[i][j] = curr_block;
             }
