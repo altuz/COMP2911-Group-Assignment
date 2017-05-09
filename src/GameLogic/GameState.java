@@ -28,6 +28,11 @@ public class GameState{
         this.goal_blocks= level.getGoals();
     }
 
+    /**
+     * Returns true if game is over, false otherwise
+     * @author Nicholas Mulianto
+     * @return
+     */
     public boolean game_over() {
         for (int[] coords : this.goal_blocks) {
             int x = coords[0];
