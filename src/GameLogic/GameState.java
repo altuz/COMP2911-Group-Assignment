@@ -79,28 +79,29 @@ public class GameState{
      * @author James Ren
      */
     private boolean move_up() {
-        int currLocation[] = this.player_loc; // gets the player location
+       int currLocation[] = this.player_loc; // gets the player location
         int rowNum = currLocation[0]; // gets the row that the player is standing on
         int columnNum = currLocation[1]; // gets the column that the player is standing on
         int boxRowNum = 0;
-
+        
         // Handles the case that the player wants to move out of bounds
         if(rowNum == 0) {
             System.out.println("Movement Err: Moving out of bounds");
             return false;
-        }
-
+        } 
+        
         int blockNum = this.maze[rowNum-1][columnNum]; // gets the block status above the player's position
-		/*
-		 * Gets the tile that the player current standing on:
-		 * -> 1 == player is currently standing on a blank tile
-		 * -> 4 == player is currently standing on an end point
-		 */
-        int playerCurrPosition = this.maze[rowNum][columnNum];
+        /*
+         * Gets the tile that the player current standing on:
+         * -> 1 == player is currently standing on a blank tile
+         * -> 4 == player is currently standing on an end point
+         */
+        int playerCurrPosition = this.maze[rowNum][columnNum]; 
+        System.out.println("The player is: " + playerCurrPosition);
 
         switch (blockNum) {
             case -1: // the block above is an immovable object
-                System.out.println("Movement Err: Cannot move UPWARDS because there is an immovable object");
+                System.out.println("Movement Err: Cannot move UP because there is an immovable object");
                 return false;
             case 0: // the block above is an empty tile
                 if (playerCurrPosition == 1) { // handles the case that the player is standing on an empty tile
@@ -108,64 +109,65 @@ public class GameState{
                     this.maze[rowNum-1][columnNum] = 1; // move the player to the tile above
                     this.player_loc[0] = rowNum-1; // update the player's location
                 } else {
-                    this.maze[rowNum][columnNum] = 3; // reset end point
-                    this.maze[rowNum-1][columnNum] = 1;
+                    this.maze[rowNum][columnNum] = 3; // reset end point 
+                    this.maze[rowNum-1][columnNum] = 1; 
                     this.player_loc[0] = rowNum-1;
                 }
-                break;
+                break;      
             case 2: // the block above is a box
                 boxRowNum = rowNum-1;
-
+                
                 // handles the case that the box movement is successful
                 if (moveBox(columnNum, boxRowNum, Movement.UP)) {
                     if (playerCurrPosition == 1) {
                         this.maze[rowNum][columnNum] = 0; // change the player's current position in the maze to a blank tile
                         this.maze[rowNum-1][columnNum] = 1; // move the player to the tile above
-                        this.player_loc[0] = rowNum-1; // update the player's location
-                    }
+                        this.player_loc[0] = rowNum-1; // update the player's location 
+                    } 
+                    // handles the case that the player is standing on an endpoint
                     else if (playerCurrPosition == 4) {
                         this.maze[rowNum][columnNum] = 3; // reset end point
-                        this.maze[rowNum-1][columnNum] = 1;
+                        this.maze[rowNum-1][columnNum] = 1; 
                         this.player_loc[0] = rowNum-1;
-                    }
+                    } 
                     break;
                 } else { // box movement was not successful
-                    System.out.println("Movement Err: Cannot push box");
+                    
                     return false;
                 }
             case 3: // handles the case that the tile above is an end point
+                System.out.println("Case 3");
                 if (playerCurrPosition == 1) {
                     this.maze[rowNum][columnNum] = 0; // change the player's current position in the maze to a blank tile
                     this.maze[rowNum-1][columnNum] = 4; // move the player to the tile above
-                    this.player_loc[0] = rowNum-1; // update the player's location
+                    this.player_loc[0] = rowNum-1; // update the player's location 
                 } else { // the player is currently standing on an end point
                     this.maze[rowNum][columnNum] = 3; // reset end point
-                    this.maze[rowNum-1][columnNum] = 4;
+                    this.maze[rowNum-1][columnNum] = 4; 
                     this.player_loc[0] = rowNum-1;
                 }
             case 5: // handles the case that that the tile above has a box on an end point
                 boxRowNum = rowNum-1;
-
+                
                 // handles the case that the box movement is successful
                 if (moveBox(boxRowNum, rowNum, Movement.UP)) {
                     if (playerCurrPosition == 1) { // default case
                         this.maze[rowNum][columnNum] = 0; // change the player's current position in the maze to a blank tile
-                        this.maze[rowNum-1][columnNum] = 1; // move the player to the tile above
-                        this.player_loc[0] = rowNum-1; // update the player's location
-                    }
+                        this.maze[rowNum-1][columnNum] = 4; // move the player to the tile above
+                        this.player_loc[0] = rowNum-1; // update the player's location 
+                    } 
                     else if (playerCurrPosition == 4) {
                         this.maze[rowNum][columnNum] = 3; // reset end point
-                        this.maze[rowNum-1][columnNum] = 1;
-                        this.player_loc[0] = rowNum-1;
-                    }
+                        this.maze[rowNum-1][columnNum] = 1; 
+                        this.player_loc[0] = rowNum-1; 
+                    } 
                     break;
                 } else { // box movement was not successful
-                    System.out.println("Movement Err: Cannot push box");
                     return false;
                 }
-
+                
         }
-
+        
         return true;
     }
 
@@ -177,30 +179,30 @@ public class GameState{
      * @author James Ren
      */
     private boolean move_down() {
-        int currLocation[] = this.player_loc; // gets the player location
+       int currLocation[] = this.player_loc; // gets the player location
         int rowNum = currLocation[0]; // gets the row that the player is standing on
         int columnNum = currLocation[1]; // gets the column that the player is standing on
         int rowMax = this.maze.length; // gets the maximum row length of the 2D matrix
         int boxRowNum = 0;
-
+        
         // Handles the case that the player wants to move out of bounds
         // To counter null pointer exceptions
         if(rowNum >= rowMax) {
             System.out.println("Movement Err: Moving out of bounds");
             return false;
-        }
-
+        } 
+        
         int blockNum = this.maze[rowNum+1][columnNum]; // gets the block status below the player's position
-		/*
-		 * Gets the tile that the player current standing on:
-		 * -> 1 == player is currently standing on a blank tile
-		 * -> 4 == player is currently standing on an end point
-		 */
-        int playerCurrPosition = this.maze[rowNum][columnNum];
+        /*
+         * Gets the tile that the player current standing on:
+         * -> 1 == player is currently standing on a blank tile
+         * -> 4 == player is currently standing on an end point
+         */
+        int playerCurrPosition = this.maze[rowNum][columnNum]; 
 
         switch (blockNum) {
             case -1: // the block below is an immovable object
-                System.out.println("Movement Err: Cannot move UPWARDS because there is an immovable object");
+                System.out.println("Movement Err: Cannot move DOWN because there is an immovable object");
                 return false;
             case 0: // the block below is an empty tile
                 if (playerCurrPosition == 1) { // handles the case that the player is standing on an empty tile
@@ -208,11 +210,11 @@ public class GameState{
                     this.maze[rowNum+1][columnNum] = 1; // move the player to the tile below
                     this.player_loc[0] = rowNum+1; // update the player's location
                 } else {
-                    this.maze[rowNum][columnNum] = 3; // reset end point
-                    this.maze[rowNum+1][columnNum] = 1;
-                    this.player_loc[0] = rowNum+1;
+                    this.maze[rowNum][columnNum] = 3; // reset end point 
+                    this.maze[rowNum+1][columnNum] = 1; 
+                    this.player_loc[0] = rowNum+1; 
                 }
-                break;
+                break;      
             case 2: // the block below is a box
                 // check that we can move the block
                 boxRowNum = rowNum+1;
@@ -221,50 +223,48 @@ public class GameState{
                     if (playerCurrPosition == 1) {
                         this.maze[rowNum][columnNum] = 0; // change the player's current position in the maze to a blank tile
                         this.maze[rowNum+1][columnNum] = 1; // move the player to the tile above
-                        this.player_loc[0] = rowNum+1; // update the player's location
-                    }
+                        this.player_loc[0] = rowNum+1; // update the player's location 
+                    } 
                     else if (playerCurrPosition == 4) {
                         this.maze[rowNum][columnNum] = 3; // reset end point
-                        this.maze[rowNum+1][columnNum] = 1;
-                        this.player_loc[0] = rowNum+1;
-                    }
+                        this.maze[rowNum+1][columnNum] = 1; 
+                        this.player_loc[0] = rowNum+1; 
+                    } 
                     break;
                 } else { // box movement was not successful
-                    System.out.println("Movement Err: Cannot push box");
+                    
                     return false;
                 }
-            case 3: // handles the case that the tile above is an end point
+            case 3: // handles the case that the tile below is an end point
                 if (playerCurrPosition == 1) {
                     this.maze[rowNum][columnNum] = 0; // change the player's current position in the maze to a blank tile
-                    this.maze[rowNum+1][columnNum] = 4; // move the player to the tile above
-                    this.player_loc[0] = rowNum+1;  // update the player's location
+                    this.maze[rowNum+1][columnNum] = 4; // move the player to the tile below
+                    this.player_loc[0] = rowNum+1;  // update the player's location 
                 } else { // the player is currently standing on an end point
                     this.maze[rowNum][columnNum] = 3; // reset end point
-                    this.maze[rowNum+1][columnNum] = 4;
-                    this.player_loc[0] = rowNum+1;
+                    this.maze[rowNum+1][columnNum] = 4; 
+                    this.player_loc[0] = rowNum+1; 
                 }
             case 5: // handles the case that that the tile above has a box on an end point
                 boxRowNum = rowNum+1;
-
+                
                 // handles the case that the box movement is successful
                 if (moveBox(columnNum, boxRowNum, Movement.DOWN)) {
                     if (playerCurrPosition == 1) { // default case
                         this.maze[rowNum][columnNum] = 0; // change the player's current position in the maze to a blank tile
-                        this.maze[rowNum+1][columnNum] = 1; // move the player to the tile above
-                        this.player_loc[0] = rowNum+1; // update the player's location
-                    }
+                        this.maze[rowNum+1][columnNum] = 4; // move the player to the tile above
+                        this.player_loc[0] = rowNum+1; // update the player's location 
+                    } 
                     else if (playerCurrPosition == 4) {
                         this.maze[rowNum][columnNum] = 3; // reset end point
-                        this.maze[rowNum+1][columnNum] = 1;
-                        this.player_loc[0] = rowNum+1;
-                    }
+                        this.maze[rowNum+1][columnNum] = 1; 
+                        this.player_loc[0] = rowNum+1;  
+                    } 
                     break;
                 } else { // box movement was not successful
-                    System.out.println("Movement Err: Cannot push box");
                     return false;
                 }
         }
-
         return true;
     }
 
@@ -280,25 +280,25 @@ public class GameState{
         int rowNum = currLocation[0]; // gets the row that the player is standing on
         int columnNum = currLocation[1]; // gets the column that the player is standing on
         int boxColNum = 0;
-
+        
         // Handles the case that the player wants to move out of bounds
         // To counter null pointer exceptions
         if(columnNum == 0) {
             System.out.println("Movement Err: Moving out of bounds");
             return false;
-        }
-
+        } 
+        
         int blockNum = this.maze[rowNum][columnNum-1]; // gets the block status to the left of player's position
-		/*
-		 * Gets the tile that the player current standing on:
-		 * -> 1 == player is currently standing on a blank tile
-		 * -> 4 == player is currently standing on an end point
-		 */
-        int playerCurrPosition = this.maze[rowNum][columnNum];
+        /*
+         * Gets the tile that the player current standing on:
+         * -> 1 == player is currently standing on a blank tile
+         * -> 4 == player is currently standing on an end point
+         */
+        int playerCurrPosition = this.maze[rowNum][columnNum]; 
 
         switch (blockNum) {
             case -1: // the block to the left is an immovable object
-                System.out.println("Movement Err: Cannot move UPWARDS because there is an immovable object");
+                System.out.println("Movement Err: Cannot move LEFT because there is an immovable object");
                 return false;
             case 0: // the block to the left is an empty tile
                 if (playerCurrPosition == 1) { // handles the case that the player is standing on an empty tile
@@ -306,11 +306,11 @@ public class GameState{
                     this.maze[rowNum][columnNum-1] = 1; // move the player to the tile to the left
                     this.player_loc[1] = columnNum-1; // update the player's location
                 } else {
-                    this.maze[rowNum][columnNum] = 3; // reset end point
-                    this.maze[rowNum][columnNum-1] = 1;
+                    this.maze[rowNum][columnNum] = 3; // reset end point 
+                    this.maze[rowNum][columnNum-1] = 1; 
                     this.player_loc[1] = columnNum-1;
                 }
-                break;
+                break;      
             case 2: // the block to the left is a box
                 // check that we can move the block
                 boxColNum = columnNum-1;
@@ -319,50 +319,48 @@ public class GameState{
                     if (playerCurrPosition == 1) {
                         this.maze[rowNum][columnNum] = 0; // change the player's current position in the maze to a blank tile
                         this.maze[rowNum][columnNum-1] = 1; // move the player to the tile above
-                        this.player_loc[1] = columnNum-1; // update the player's location
-                    }
+                        this.player_loc[1] = columnNum-1; // update the player's location 
+                    } 
                     else if (playerCurrPosition == 4) {
                         this.maze[rowNum][columnNum] = 3; // reset end point
-                        this.maze[rowNum][columnNum-1] = 1;
+                        this.maze[rowNum][columnNum-1] = 1; 
                         this.player_loc[1] = columnNum-1;
-                    }
+                    } 
                     break;
                 } else { // box movement was not successful
-                    System.out.println("Movement Err: Cannot push box");
+                    
                     return false;
                 }
             case 3: // handles the case that the tile above is an end point
                 if (playerCurrPosition == 1) {
                     this.maze[rowNum][columnNum] = 0; // change the player's current position in the maze to a blank tile
                     this.maze[rowNum][columnNum-1] = 4; // move the player to the tile above
-                    this.player_loc[1] = columnNum-1; // update the player's location
+                    this.player_loc[1] = columnNum-1; // update the player's location 
                 } else { // the player is currently standing on an end point
                     this.maze[rowNum][columnNum] = 3; // reset end point
-                    this.maze[rowNum][columnNum-1] = 4;
+                    this.maze[rowNum][columnNum-1] = 4; 
                     this.player_loc[1] = columnNum-1;
                 }
             case 5: // handles the case that that the tile above has a box on an end point
                 boxColNum = columnNum-1;
-
+                
                 // handles the case that the box movement is successful
                 if (moveBox(boxColNum,rowNum, Movement.LEFT)) {
                     if (playerCurrPosition == 1) { // default case
                         this.maze[rowNum][columnNum] = 0; // change the player's current position in the maze to a blank tile
-                        this.maze[rowNum][columnNum-1] = 1; // move the player to the tile above
-                        this.player_loc[1] = columnNum-1; // update the player's location
-                    }
+                        this.maze[rowNum][columnNum-1] = 4; // move the player to the tile above
+                        this.player_loc[1] = columnNum-1; // update the player's location 
+                    } 
                     else if (playerCurrPosition == 4) {
                         this.maze[rowNum][columnNum] = 3; // reset end point
-                        this.maze[rowNum][columnNum-1] = 1;
-                        this.player_loc[1] = columnNum-1;
-                    }
+                        this.maze[rowNum][columnNum-1] = 4; 
+                        this.player_loc[1] = columnNum-1;  
+                    } 
                     break;
                 } else { // box movement was not successful
-                    System.out.println("Movement Err: Cannot push box");
                     return false;
                 }
         }
-
         return true;
     }
 
@@ -379,25 +377,27 @@ public class GameState{
         int columnNum = currLocation[1]; // gets the column that the player is standing on
         int colMax = this.maze[0].length; //gets the maximum column size
         int boxColNum = 0;
-
+        
+        //System.out.println("Total number of columns: " + colMax);
+        //System.out.println("Player location: " + columnNum);
         // Handles the case that the player wants to move out of bounds
         // To counter null pointer exceptions
-        if(columnNum >= colMax) {
+        if(columnNum+1 >= colMax) {
             System.out.println("Movement Err: Moving out of bounds");
             return false;
-        }
-
+        } 
+        
         int blockNum = this.maze[rowNum][columnNum+1]; // gets the block status to the left of player's position
-		/*
-		 * Gets the tile that the player current standing on:
-		 * -> 1 == player is currently standing on a blank tile
-		 * -> 4 == player is currently standing on an end point
-		 */
-        int playerCurrPosition = this.maze[rowNum][columnNum];
+        /*
+         * Gets the tile that the player current standing on:
+         * -> 1 == player is currently standing on a blank tile
+         * -> 4 == player is currently standing on an end point
+         */
+        int playerCurrPosition = this.maze[rowNum][columnNum]; 
 
         switch (blockNum) {
             case -1: // the block to the left is an immovable object
-                System.out.println("Movement Err: Cannot move UPWARDS because there is an immovable object");
+                System.out.println("Movement Err: Cannot move RIGHT because there is an immovable object");
                 return false;
             case 0: // the block to the left is an empty tile
                 if (playerCurrPosition == 1) { // handles the case that the player is standing on an empty tile
@@ -405,11 +405,11 @@ public class GameState{
                     this.maze[rowNum][columnNum+1] = 1; // move the player to the tile to the left
                     this.player_loc[1] = columnNum+1; // update the player's location
                 } else {
-                    this.maze[rowNum][columnNum] = 3; // reset end point
-                    this.maze[rowNum][columnNum+1] = 1;
+                    this.maze[rowNum][columnNum] = 3; // reset end point 
+                    this.maze[rowNum][columnNum+1] = 1; 
                     this.player_loc[1] = columnNum+1;
                 }
-                break;
+                break;      
             case 2: // the block to the left is a box
                 // check that we can move the block
                 boxColNum = columnNum+1;
@@ -418,50 +418,48 @@ public class GameState{
                     if (playerCurrPosition == 1) {
                         this.maze[rowNum][columnNum] = 0; // change the player's current position in the maze to a blank tile
                         this.maze[rowNum][columnNum+1] = 1; // move the player to the tile above
-                        this.player_loc[1] = columnNum+1; // update the player's location
-                    }
+                        this.player_loc[1] = columnNum+1; // update the player's location 
+                    } 
                     else if (playerCurrPosition == 4) {
                         this.maze[rowNum][columnNum] = 3; // reset end point
-                        this.maze[rowNum][columnNum+1] = 1;
+                        this.maze[rowNum][columnNum+1] = 1; 
                         this.player_loc[1] = columnNum+1;
-                    }
+                    } 
                     break;
                 } else { // box movement was not successful
-                    System.out.println("Movement Err: Cannot push box");
+                    
                     return false;
                 }
             case 3: // handles the case that the tile above is an end point
                 if (playerCurrPosition == 1) {
                     this.maze[rowNum][columnNum] = 0; // change the player's current position in the maze to a blank tile
                     this.maze[rowNum][columnNum+1] = 4; // move the player to the tile above
-                    this.player_loc[1] = columnNum+1; // update the player's location
+                    this.player_loc[1] = columnNum+1; // update the player's location 
                 } else { // the player is currently standing on an end point
                     this.maze[rowNum][columnNum] = 3; // reset end point
-                    this.maze[rowNum][columnNum+1] = 4;
+                    this.maze[rowNum][columnNum+1] = 4; 
                     this.player_loc[1] = columnNum+1;
                 }
             case 5: // handles the case that that the tile above has a box on an end point
                 boxColNum = columnNum+1;
-
+                
                 // handles the case that the box movement is successful
                 if (moveBox(boxColNum,rowNum, Movement.RIGHT)) {
                     if (playerCurrPosition == 1) { // default case
                         this.maze[rowNum][columnNum] = 0; // change the player's current position in the maze to a blank tile
-                        this.maze[rowNum][columnNum+1] = 1; // move the player to the tile above
-                        this.player_loc[1] = columnNum+1; // update the player's location
-                    }
+                        this.maze[rowNum][columnNum+1] = 4; // move the player to the tile above
+                        this.player_loc[1] = columnNum+1; // update the player's location 
+                    } 
                     else if (playerCurrPosition == 4) {
                         this.maze[rowNum][columnNum] = 3; // reset end point
-                        this.maze[rowNum][columnNum+1] = 1;
-                        this.player_loc[1] = columnNum+1;
-                    }
+                        this.maze[rowNum][columnNum+1] = 1; 
+                        this.player_loc[1] = columnNum+1;  
+                    } 
                     break;
                 } else { // box movement was not successful
-                    System.out.println("Movement Err: Cannot push box");
                     return false;
                 }
         }
-
         return true;
     }
 
@@ -478,13 +476,13 @@ public class GameState{
      */
     private boolean moveBox(int boxColumnNum, int boxRowNum, Movement dir) {
     	/*
-    	 * Gets the number of the tile that the box is on:
-    	 * -> 2 == box is not on the end point
-    	 * -> 5 == box is on the end point
-    	 */
-        int boxType = this.maze[boxRowNum][boxColumnNum];
-        int tile = 0;
-
+         * Gets the number of the tile that the box is on:
+         * -> 2 == box is not on the end point
+         * -> 5 == box is on the end point
+         */
+        int boxType = this.maze[boxRowNum][boxColumnNum]; 
+        int tile = 0; 
+        
         switch (dir) {
             case UP: // moving the box up
                 // handles the case that the box wants to move out of bounds
@@ -492,13 +490,13 @@ public class GameState{
                     System.out.println("Movement Err: Moving out of bounds");
                     return false;
                 }
-
+                
                 tile = this.maze[boxRowNum-1][boxColumnNum]; // gets the tile above the box
-
+                
                 switch (tile) {
                     case -1: // the tile above is an immovable object
                         System.out.println("Movement Err: Box cannot move UPWARDS because there is an immoavable object"); // For testing - comment out if needed
-                        return false;
+                        return false; 
                     case 0: // the tile above the box is empty
                         if (boxType == 2) {
                             this.maze[boxRowNum-1][boxColumnNum] = 2;
@@ -515,7 +513,7 @@ public class GameState{
                         return false;
                     case 3: // the tile above is an end point
                         this.maze[boxRowNum-1][boxColumnNum] = 5; // marks that a box is on an end point
-
+                        
                         // handles the case that the box is sitting on a current end point
                         if (boxType == 2) {
                             this.maze[boxRowNum][boxColumnNum] = 0;
@@ -528,21 +526,21 @@ public class GameState{
                         System.out.println("Movement Err: Box cannot move UPWARDS because there is another box"); // For testing - comment out if needed
                         return false;
                 }
-
+                
                 break;
             case DOWN: // moving the box down
                 int rowsMax = this.maze.length; //gets the maximum row length
-
+                
                 // check if the box is moving out of bounds
                 if (boxRowNum >= rowsMax) {
                     System.out.println("Movement Err: Moving out of bounds");
                     return false;
                 }
-
+                
                 tile = this.maze[boxRowNum+1][boxColumnNum]; // gets the tile that is below the box
                 switch (tile) {
                     case -1: // the case that the tile is an immovable object
-                        System.out.println("Movement Err: Box cannot move UPWARDS because there is an immoavable object"); // For testing - comment out if needed
+                        System.out.println("Movement Err: Box cannot move DOWN because there is an immoavable object"); // For testing - comment out if needed
                         return false;
                     case 0: // the case that the tile is an empty object
                         if (boxType == 2) { // default case
@@ -559,7 +557,7 @@ public class GameState{
                         return false;
                     case 3: // the tile above is an end point
                         this.maze[boxRowNum+1][boxColumnNum] = 5; // marks that a box is on an end point
-
+                        
                         // handles the case that the box is sitting on a current end point
                         if (boxType == 2) {
                             this.maze[boxRowNum][boxColumnNum] = 0;
@@ -579,9 +577,9 @@ public class GameState{
                     System.out.println("Movement Err: Moving out of bounds");
                     return false;
                 }
-
+                
                 tile = this.maze[boxRowNum][boxColumnNum-1]; // gets the tile that is to the left of the box
-
+                
                 switch (tile) {
                     case -1: // case that the tile to the left of the box is an immoavable object
                         System.out.println("Movement Err: Box cannot move LEFT because there is an immoavable object"); // For testing - comment out if needed
@@ -601,7 +599,7 @@ public class GameState{
                         return false;
                     case 3: // the tile to the left is an end point
                         this.maze[boxRowNum][boxColumnNum-1] = 5; // marks that a box is on an end point
-
+                        
                         // handles the case that the box is sitting on a current end point
                         if (boxType == 2) {
                             this.maze[boxRowNum][boxColumnNum] = 0;
@@ -617,14 +615,14 @@ public class GameState{
                 break;
             case RIGHT: // moving the box right
                 int colsMax = this.maze[0].length; // gets the maximum column length
-
+                
                 if (boxColumnNum >= colsMax) {
                     System.out.println("Movement Err: Moving out of bounds");
                     return false;
                 }
-
+                
                 tile = this.maze[boxRowNum][boxColumnNum+1]; // gets the tile that is to the right RIGHT of the box
-
+                
                 switch(tile) {
                     case -1: // case that the tile to the left of the box is an immoavable object
                         System.out.println("Movement Err: Box cannot move LEFT because there is an immoavable object"); // For testing - comment out if needed
@@ -644,7 +642,7 @@ public class GameState{
                         return false;
                     case 3: // the tile to the right is an end point
                         this.maze[boxRowNum][boxColumnNum+1] = 5; // marks that a box is on an end point
-
+                        
                         // handles the case that the box is sitting on a current end point
                         if (boxType == 2) {
                             this.maze[boxRowNum][boxColumnNum] = 0;
@@ -658,8 +656,21 @@ public class GameState{
                         return false;
                 }
         }
-
+        
         return false;
+    }
+
+    /**
+     * Method to print out the entire game map
+     */
+    public void printGameMap() {
+        // nested loop to print out the 2D array
+        for (int i = 0 ; i < this.maze.length ; i++) {
+            for (int j = 0 ; j < this.maze[i].length ; j++) {
+                System.out.format("%5d", this.maze[i][j]);
+            }
+            System.out.println("");
+        }
     }
 
     public int[][] getMaze() {
