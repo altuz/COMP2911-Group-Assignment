@@ -30,20 +30,28 @@
 	private class mainMenu extends Parent {
 		public mainMenu() {
 			VBox main = new VBox(4);
-			main.setTranslateX(95);
-			main.setTranslateY(75);
+			main.setPrefSize(300, 300);
+			//main.setTranslateX(95);
+			//main.setTranslateY(75);
+			main.setAlignment(Pos.CENTER);
 			
 			VBox optionmenu = new VBox(3);
-			optionmenu.setTranslateX(95);
-			optionmenu.setTranslateY(80);
+			optionmenu.setPrefSize(300, 300);
+			//optionmenu.setTranslateX(95);
+			//optionmenu.setTranslateY(80);
+			optionmenu.setAlignment(Pos.CENTER);
 			
-			VBox gameoptions = new VBox(4);
-			gameoptions.setTranslateX(95);
-			gameoptions.setTranslateY(80);
+			VBox gameoptions = new VBox(5);
+			gameoptions.setPrefSize(300, 300);
+			//gameoptions.setTranslateX(95);
+			//gameoptions.setTranslateY(55);
+			gameoptions.setAlignment(Pos.CENTER);
 			
-			VBox option = new VBox(4);
-				option.setTranslateX(95);
-			option.setTranslateY(80);
+			VBox option = new VBox(3);
+			option.setPrefSize(300, 300);
+			//option.setTranslateX(95);
+			//option.setTranslateY(90);
+			option.setAlignment(Pos.CENTER);
 
 			VBox start = new VBox(1);
 			
@@ -126,35 +134,31 @@
 				System.exit(0);
 			});
 			
+			//Implement after game works
+			Button restart = new Button("RESTART");
+			restart.setOnMouseClicked(event -> {
+
+			});
+			
 			game.grid.setAlignment(Pos.CENTER);
 			
 			main.getChildren().addAll(newgame, options1, tutorial, exit);
 			optionmenu.getChildren().addAll(sound, back1, exit1);
-			gameoptions.getChildren().addAll(resume, options, mainmenu, exit2);
-			option.getChildren().addAll(sound1, mainmenu, back, exit3);
+			gameoptions.getChildren().addAll(resume,restart, options, mainmenu, exit2);
+			option.getChildren().addAll(sound1, back, exit3);
 			start.getChildren().addAll(game.grid);
 
 			start.setOnKeyPressed (event -> {
 				if(event.getCode() == KeyCode.ESCAPE) {
-					if(gameoptions.isVisible() == false) {
+					if(gameoptions.isVisible() == false && option.isVisible() == false) {
 					gameoptions.setVisible(true);
-					start.setOpacity(0.7);
-					} else {
-					gameoptions.setVisible(false);
-					start.setOpacity(1);
-					}
+					start.setOpacity(0.5);
+					} else if(gameoptions.isVisible() == true && options.isVisible() == false){
+						gameoptions.setVisible(false);
+						start.setOpacity(1);
+					}	
 				}
 			});
-			
-			/*start.setOnMouseClicked(event -> {
-				if(gameoptions.isVisible() == false) {
-					gameoptions.setVisible(true);
-					start.setOpacity(0.7);
-				} else {
-					gameoptions.setVisible(false);
-					start.setOpacity(1);
-				}
-			});*/
 			getChildren().addAll(main);
 		}
 	}
@@ -165,7 +169,7 @@
 			grid.setPadding(new Insets(10,10,10,10));
 			grid.setVgap(3);
 			grid.setHgap(3);
-			GameState test_game = new GameState("/home/altuz/IdeaProjects/COMP2911-Group-Assignment/src/GameLogic/test_maze");
+			GameState test_game = new GameState("test_maze");
 
 			int sampleMap[][] = test_game.getMaze();
 			

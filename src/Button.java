@@ -22,7 +22,6 @@ public class Button extends StackPane {
 		
 		//Rectangle buttons
 		Rectangle bg = new Rectangle(115, 35);
-		bg.setOpacity(0.4);
 		bg.setFill(Color.BLACK);
 		
 		//Center text
