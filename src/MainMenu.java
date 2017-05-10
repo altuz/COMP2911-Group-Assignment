@@ -1,3 +1,4 @@
+	import GameLogic.GameState;
 	import javafx.application.Application;
 	import javafx.geometry.Insets;
 	import javafx.geometry.Pos;
@@ -164,20 +165,13 @@
 			grid.setPadding(new Insets(10,10,10,10));
 			grid.setVgap(3);
 			grid.setHgap(3);
-			
-			int sampleMap[][] = {{-1, -1, -1, -1, -1, -1},
-								{-1, -1,  0,  0, -1, -1},
-								{-1,  1,  2,  0, -1, -1},
-								{-1, -1,  2,  0, -1, -1},
-								{-1, -1,  0,  2,  0, -1},
-								{-1,  3,  2,  0,  0, -1},
-								{-1,  3,  3,  5,  3, -1},
-								{-1, -1, -1, -1, -1, -1}
-			};
+			GameState test_game = new GameState("/home/altuz/IdeaProjects/COMP2911-Group-Assignment/src/GameLogic/test_maze");
+
+			int sampleMap[][] = test_game.getMaze();
 			
 			int rows = 8;
 			int cols = 6;
-			
+
 			for(int i = 0; i < rows ; i++){
 				for(int j = 0; j < cols ; j++){
 					Rectangle newRect = new Rectangle(20,20);
@@ -193,7 +187,7 @@
 					}
 		            GridPane.setConstraints(newRect, j, i);
 		            grid.add(newRect,j,i);
-				}	
+				}
 			}
 			grid.setPrefSize(300, 300);
 			this.grid = grid;

@@ -146,6 +146,18 @@ public class GameState{
                     this.maze[rowNum-1][columnNum] = 4; 
                     this.player_loc[0] = rowNum-1;
                 }
+            case 4:
+                if (playerCurrPosition == 1) { // default case
+                    this.maze[rowNum][columnNum] = 0; // change the player's current position in the maze to a blank tile
+                    this.maze[rowNum-1][columnNum] = 4; // move the player to the tile above
+                    this.player_loc[0] = rowNum-1; // update the player's location
+                }
+                else if (playerCurrPosition == 4) {
+                    this.maze[rowNum][columnNum] = 3; // reset end point
+                    this.maze[rowNum-1][columnNum] = 1;
+                    this.player_loc[0] = rowNum-1;
+                }
+                break;
             case 5: // handles the case that that the tile above has a box on an end point
                 boxRowNum = rowNum-1;
                 
@@ -245,6 +257,18 @@ public class GameState{
                     this.maze[rowNum+1][columnNum] = 4; 
                     this.player_loc[0] = rowNum+1; 
                 }
+            case 4:
+                if (playerCurrPosition == 1) { // default case
+                    this.maze[rowNum][columnNum] = 0; // change the player's current position in the maze to a blank tile
+                    this.maze[rowNum+1][columnNum] = 4; // move the player to the tile above
+                    this.player_loc[0] = rowNum+1; // update the player's location
+                }
+                else if (playerCurrPosition == 4) {
+                    this.maze[rowNum][columnNum] = 3; // reset end point
+                    this.maze[rowNum+1][columnNum] = 1;
+                    this.player_loc[0] = rowNum+1;
+                }
+                break;
             case 5: // handles the case that that the tile above has a box on an end point
                 boxRowNum = rowNum+1;
                 
@@ -341,6 +365,18 @@ public class GameState{
                     this.maze[rowNum][columnNum-1] = 4; 
                     this.player_loc[1] = columnNum-1;
                 }
+            case 4:
+                if (playerCurrPosition == 1) { // default case
+                    this.maze[rowNum][columnNum] = 0; // change the player's current position in the maze to a blank tile
+                    this.maze[rowNum][columnNum-1] = 4; // move the player to the tile above
+                    this.player_loc[1] = columnNum-1; // update the player's location
+                }
+                else if (playerCurrPosition == 4) {
+                    this.maze[rowNum][columnNum] = 3; // reset end point
+                    this.maze[rowNum][columnNum-1] = 4;
+                    this.player_loc[1] = columnNum-1;
+                }
+                break;
             case 5: // handles the case that that the tile above has a box on an end point
                 boxColNum = columnNum-1;
                 
@@ -440,6 +476,18 @@ public class GameState{
                     this.maze[rowNum][columnNum+1] = 4; 
                     this.player_loc[1] = columnNum+1;
                 }
+            case 4:
+                if (playerCurrPosition == 1) { // default case
+                    this.maze[rowNum][columnNum] = 0; // change the player's current position in the maze to a blank tile
+                    this.maze[rowNum][columnNum+1] = 4; // move the player to the tile above
+                    this.player_loc[1] = columnNum+1; // update the player's location
+                }
+                else if (playerCurrPosition == 4) {
+                    this.maze[rowNum][columnNum] = 3; // reset end point
+                    this.maze[rowNum][columnNum+1] = 4;
+                    this.player_loc[1] = columnNum+1;
+                }
+                break;
             case 5: // handles the case that that the tile above has a box on an end point
                 boxColNum = columnNum+1;
                 
@@ -452,7 +500,7 @@ public class GameState{
                     } 
                     else if (playerCurrPosition == 4) {
                         this.maze[rowNum][columnNum] = 3; // reset end point
-                        this.maze[rowNum][columnNum+1] = 1; 
+                        this.maze[rowNum][columnNum+1] = 4;
                         this.player_loc[1] = columnNum+1;  
                     } 
                     break;
