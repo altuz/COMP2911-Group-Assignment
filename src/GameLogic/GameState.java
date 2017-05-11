@@ -70,13 +70,22 @@ public class GameState{
         return false;
     }
 
+    /**
+     * Helper function for movements.
+     * Given a direction and the new row/col index, moves the player to that direction.
+     * @author James Ren, Refactored by Nicholas Mulianto
+     * @param new_row
+     * @param new_col
+     * @param dir
+     * @return success
+     */
     private boolean move_player(int new_row, int new_col, Movement dir) {
         int currLocation[] = this.player_loc; // gets the player location
         int rowNum = currLocation[0]; // gets the row that the player is standing on
         int columnNum = currLocation[1]; // gets the column that the player is standing on
         int boxRowNum = 0;
         int boxColNum = 0;
-        // find axis of movement
+        // finds axis of movement, true = x axis, false = y axis
         boolean axis = true;
         switch (dir) {
             case UP:
