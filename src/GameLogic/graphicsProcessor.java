@@ -39,7 +39,7 @@ public class graphicsProcessor extends Application{
 	
 		Scene scene = new Scene(grid, 400, 400);
 		//create string object containing file name
-		Object o = "test.txt";
+		Object o = "test_maze.txt";
 		//generate game state to display
 		GameState state = new GameState(o); 
 		
