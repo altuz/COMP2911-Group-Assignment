@@ -2,7 +2,6 @@ package GameLogic;
 
 import javafx.application.Application;
 import Definitions.Movement;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
@@ -82,6 +81,8 @@ public class graphicsProcessor extends Application{
 		for(int i = 0; i < rows ; i++){
 			for(int j = 0; j < cols ; j++){
 				Rectangle newRect = new Rectangle(40,40);
+				newRect.setArcHeight(19);
+				newRect.setArcWidth(19);
 				int blockType = map[i][j];
 				switch(blockType){
 					case -1: newRect.setFill(Color.BLACK); break;		//immovable

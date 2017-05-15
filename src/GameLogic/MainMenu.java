@@ -1,16 +1,12 @@
 package GameLogic;
 
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
-	
 public class MainMenu extends Parent {
 	private VBox main;
 	private VBox optionmenu;
@@ -45,6 +41,7 @@ public class MainMenu extends Parent {
 	
 	public MainMenu(int W, int H) {
 		GridPane grid = new GridPane();
+		grid.setPrefSize(W, H);
 		grid.setPadding(new Insets(10,10,10,10));
 		grid.setVgap(3);
 		grid.setHgap(3);
@@ -172,6 +169,7 @@ public class MainMenu extends Parent {
 		
 		getChildren().addAll(main);
 	}
+
 }
 
 

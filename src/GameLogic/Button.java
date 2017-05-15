@@ -1,7 +1,5 @@
 package GameLogic;
 import javafx.geometry.Pos;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.Glow;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -22,26 +20,28 @@ public class Button extends StackPane {
 		text.setFill(Color.WHITE);
 		
 		//Rectangle buttons
-		Rectangle bg = new Rectangle(115, 35);
-		bg.setFill(Color.BLACK);
+		Rectangle btn = new Rectangle(115, 35);
+		btn.setFill(Color.BLACK);
+		btn.setArcWidth(19);
+		btn.setArcHeight(19);
 		
 		//Center text
 		setAlignment(Pos.CENTER);
 		
 		//Adds the background rectangle (or button) before text
-		getChildren().addAll(bg, text);
+		getChildren().addAll(btn, text);
 		
 		//Button animation when mouse hovers <--- need to change/edit this for keyboard
 		setOnMouseEntered(event -> {
-		bg.setTranslateX(8);
-		bg.setFill(Color.LIGHTGREY);
+		btn.setTranslateX(8);
+		btn.setFill(Color.LIGHTGREY);
 		text.setTranslateX(10);
 		text.setFill(Color.BLACK);
 		});
 		
 		setOnMouseExited(event -> {
-		bg.setTranslateX(0);
-		bg.setFill(Color.BLACK);
+		btn.setTranslateX(0);
+		btn.setFill(Color.BLACK);
 		text.setTranslateX(0);
 		text.setFill(Color.WHITE);
 		});
