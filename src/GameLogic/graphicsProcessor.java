@@ -2,10 +2,10 @@ package GameLogic;
 
 import javafx.application.Application;
 import Definitions.Movement;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.stage.Stage;
@@ -13,7 +13,8 @@ import GameLogic.GameState;
 
 
 public class graphicsProcessor extends Application{
-	
+	public final int W = 600;
+	public final int H = 600;
 	
 
 	public static void main(String ...args) {
@@ -29,26 +30,27 @@ public class graphicsProcessor extends Application{
 	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		primaryStage.setTitle("Title of the window");
+		primaryStage.setTitle("Game");
+		Pane root = new Pane();
+		root.setPrefSize(W, H);
+		MainMenu mainmenu = new MainMenu(W, H);
 		
-		
-		GridPane grid = new GridPane();
-		grid.setPadding(new Insets(10,10,10,10));
-		grid.setVgap(3);
-		grid.setHgap(3);
-	
-		Scene scene = new Scene(grid, 400, 400);
+		Scene scene = new Scene(mainmenu, W, H);
 		//create string object containing file name
-		Object o = "test.txt";
+		Object o = "test_maze.txt";
 		//generate game state to display
 		GameState state = new GameState(o); 
-		
+		primaryStage.setResizable(false);
 		//show grid initially
         primaryStage.setScene(scene);
-        showGrid(state.getMaze(),grid,primaryStage);
         
+        if(mainmenu.getStart().isVisible() == true) {
+        	mainmenu.getGrid().setVisible(true);
+            showGrid(state.getMaze(),mainmenu.getGrid(),primaryStage);
+        }
         //control mechanism, takes keybaord events in the form of up,down,left,right keys only
         scene.setOnKeyPressed(event -> {
+        	if(mainmenu.getStart().isVisible() == true && mainmenu.getStart().getOpacity() == 1) {
         	//call backend functions to change the maze array depending on key pressed
         	if(event.getCode() == KeyCode.RIGHT) {
         		state.player_move(Movement.RIGHT);
@@ -60,7 +62,8 @@ public class graphicsProcessor extends Application{
         	} else if (event.getCode() == KeyCode.DOWN) {
         		state.player_move(Movement.DOWN);
         	}
-        	showGrid(state.getMaze(),grid,primaryStage);
+        	showGrid(state.getMaze(),mainmenu.getGrid(),primaryStage);
+        	}
         });
 
 	}
@@ -78,6 +81,8 @@ public class graphicsProcessor extends Application{
 		for(int i = 0; i < rows ; i++){
 			for(int j = 0; j < cols ; j++){
 				Rectangle newRect = new Rectangle(40,40);
+				newRect.setArcHeight(19);
+				newRect.setArcWidth(19);
 				int blockType = map[i][j];
 				switch(blockType){
 					case -1: newRect.setFill(Color.BLACK); break;		//immovable
@@ -93,13 +98,5 @@ public class graphicsProcessor extends Application{
 	            primaryStage.show();
 			}
 		}
-	}
-	
-
-	
-
-
-
-
-	
+	}	
 }	
