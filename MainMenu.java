@@ -68,7 +68,7 @@
 				getChildren().remove(main);
 				start.requestFocus();
 			});
-
+			
 			Button tutorial = new Button("TUTORIAL");
 			
 			Button resume = new Button("RESUME");
@@ -169,7 +169,7 @@
 			grid.setPadding(new Insets(10,10,10,10));
 			grid.setVgap(3);
 			grid.setHgap(3);
-			GameState test_game = new GameState("/home/altuz/IdeaProjects/COMP2911-Group-Assignment/src/GameLogic/test_maze");
+			GameState test_game = new GameState("test_maze");
 
 			int sampleMap[][] = test_game.getMaze();
 			
