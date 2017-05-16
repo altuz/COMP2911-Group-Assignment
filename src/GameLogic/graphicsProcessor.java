@@ -39,7 +39,7 @@ public class graphicsProcessor extends Application{
 	
 		Scene scene = new Scene(grid, 400, 400);
 		//create string object containing file name
-		Object o = "test.txt";
+		String o = "/home/altuz/IdeaProjects/COMP2911-Group-Assignment/src/GameLogic/test_maze";
 		//generate game state to display
 		GameState state = new GameState(o); 
 		
@@ -52,7 +52,6 @@ public class graphicsProcessor extends Application{
         	//call backend functions to change the maze array depending on key pressed
         	if(event.getCode() == KeyCode.RIGHT) {
         		state.player_move(Movement.RIGHT);
-        		
         	} else if(event.getCode() == KeyCode.LEFT) {
         		state.player_move(Movement.LEFT);
         	} else if(event.getCode() == KeyCode.UP) {
