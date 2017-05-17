@@ -12,6 +12,10 @@ public class Button extends StackPane {
 	// dont work on type String
 	
 	private Text text;
+/**
+ * Creates a button 
+ * @param name button name
+ */
 	public Button(String name) {
 		//Set text font and color
 		text = new Text(name);
