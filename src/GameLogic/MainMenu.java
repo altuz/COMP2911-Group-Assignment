@@ -1,5 +1,6 @@
 package GameLogic;
-
+import java.awt.Color;
+import javax.swing.BorderFactory;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -13,32 +14,64 @@ public class MainMenu extends Parent {
 	private VBox gameoptions;
 	private VBox option;
 	private VBox start;
+	private VBox levelcomplete;
 	private GridPane grid;
-	
+
+/**
+ * VBox of screen for level complete
+ * @return levelcomplete
+ */
+	public VBox getLevelComplete() {
+		return this.levelcomplete;
+	}
+/**
+ * GridPane of map GUI
+ * @return grid 
+ */
 	public GridPane getGrid() {
 		return this.grid;
 	}
-	
+/**
+ * Returns main menu - starting screen
+ * @return main
+ */
 	public VBox getMain() {
 		return this.main;
 	}
-	
+/**
+ * Returns VBox containing game GUI	
+ * @return start
+ */
 	public VBox getStart() {
 		return this.start;
 	}
-	
+/**
+ * Returns in game menu screen
+ * @return gameoptions
+ */
 	public VBox getGameOptions() {
 		return this.gameoptions;
 	}
-	
+/**
+ * Returns in game options screen for sound etc
+ * @return option
+ */
 	public VBox getOption() {
 		return this.option;
 	}
-	
+/**
+ * Returns main menu options screen 	
+ * @return optionmenu
+ */
 	public VBox getOptionMenu() {
 		return this.optionmenu;
 	}
 	
+/**
+ * This constructor sets up the	Buttons and various VBox which acts as screens for main menus 
+ * @param W width
+ * @param H height
+ */
 	public MainMenu(int W, int H) {
 		GridPane grid = new GridPane();
 		grid.setPrefSize(W, H);
@@ -46,8 +79,10 @@ public class MainMenu extends Parent {
 		grid.setVgap(3);
 		grid.setHgap(3);
 		grid.setVisible(false);
+		
 		this.grid = grid;
-
+		this.start = new VBox(1);
+		
 		this.main = new VBox(4);
 		main.setPrefSize(W, H);
 		main.setAlignment(Pos.CENTER);
@@ -63,18 +98,23 @@ public class MainMenu extends Parent {
 		this.option = new VBox(3);
 		option.setPrefSize(W, H);
 		option.setAlignment(Pos.CENTER);
-		this.start = new VBox(1);
-
+		
+		this.levelcomplete = new VBox(1);
+		levelcomplete.setPrefSize(W, H);
+		levelcomplete.setAlignment(Pos.CENTER);
 	
 		Button newgame = new Button("NEW GAME");
 		newgame.setOnMouseClicked(event -> {
+			getChildren().remove(main);
 			getChildren().add(start);
 			getChildren().add(gameoptions);
 			getChildren().add(option);
+			getChildren().add(levelcomplete);
+			levelcomplete.setVisible(false);
+			levelcomplete.requestFocus();
 			gameoptions.setVisible(false);
 			option.setVisible(false);
 			start.setOpacity(1);
-			getChildren().remove(main);
 			start.requestFocus();
 		});
 		
@@ -144,12 +184,13 @@ public class MainMenu extends Parent {
 			System.exit(0);
 		});
 			
-		//Implement after game works
+		//TODO
 		Button restart = new Button("RESTART");
 		restart.setOnMouseClicked(event -> {
 			
 		});
 		
+		Button cont = new Button("CONTINUE");
 		grid.setAlignment(Pos.CENTER);
 		
 		main.getChildren().addAll(newgame, options1, tutorial, exit);
@@ -157,7 +198,7 @@ public class MainMenu extends Parent {
 		gameoptions.getChildren().addAll(resume, restart, options, mainmenu, exit2);
 		option.getChildren().addAll(sound1, back, exit3);
 		start.getChildren().addAll(grid);
-
+		levelcomplete.getChildren().addAll(cont);
 		start.setOnKeyPressed (event -> {
 			if(event.getCode() == KeyCode.ESCAPE) {
 				if(gameoptions.isVisible() == false && option.isVisible() == false) {

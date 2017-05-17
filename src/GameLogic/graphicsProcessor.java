@@ -21,8 +21,8 @@ public class graphicsProcessor extends Application{
 		launch(args);
 	}
 
-	/*
-	 * Function below generates a window and grid based on 
+	/**
+	 * Function below generates a window and pane based on 
 	 * the maze generated in the backend
 	 * Currently reads a file that has hardcoded the maze
 	 * 
@@ -30,12 +30,12 @@ public class graphicsProcessor extends Application{
 	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		//create main menu
 		primaryStage.setTitle("Game");
-		Pane root = new Pane();
-		root.setPrefSize(W, H);
 		MainMenu mainmenu = new MainMenu(W, H);
 		
-		Scene scene = new Scene(mainmenu, W, H);
+		//create a new scene
+		Scene scene = new Scene(mainmenu, W, H, Color.WHITE);
 		//create string object containing file name
 		Object o = "test_maze.txt";
 		//generate game state to display
@@ -44,38 +44,46 @@ public class graphicsProcessor extends Application{
 		//show grid initially
         primaryStage.setScene(scene);
         
+        //if the game pane is 'visible'then set grid with map generation as visible
         if(mainmenu.getStart().isVisible() == true) {
         	mainmenu.getGrid().setVisible(true);
             showGrid(state.getMaze(),mainmenu.getGrid(),primaryStage);
         }
         //control mechanism, takes keybaord events in the form of up,down,left,right keys only
         scene.setOnKeyPressed(event -> {
-        	if(mainmenu.getStart().isVisible() == true && mainmenu.getStart().getOpacity() == 1) {
-        	//call backend functions to change the maze array depending on key pressed
-        	if(event.getCode() == KeyCode.RIGHT) {
-        		state.player_move(Movement.RIGHT);
-        		
-        	} else if(event.getCode() == KeyCode.LEFT) {
-        		state.player_move(Movement.LEFT);
-        	} else if(event.getCode() == KeyCode.UP) {
-        		state.player_move(Movement.UP);
-        	} else if (event.getCode() == KeyCode.DOWN) {
-        		state.player_move(Movement.DOWN);
+        	if(mainmenu.getStart().isFocused()) {
+        		//Makes keys unmovable when in-game option menu is open
+        		if(mainmenu.getStart().isVisible() == true && mainmenu.getStart().getOpacity() == 1) {
+        			//call backend functions to change the maze array depending on key pressed
+        			if(event.getCode() == KeyCode.RIGHT) {
+        				state.player_move(Movement.RIGHT);
+        			} else if(event.getCode() == KeyCode.LEFT) {
+        				state.player_move(Movement.LEFT);
+        			} else if(event.getCode() == KeyCode.UP) {
+        				state.player_move(Movement.UP);
+        			} else if (event.getCode() == KeyCode.DOWN) {
+        				state.player_move(Movement.DOWN);
+        			}
+        			showGrid(state.getMaze(), mainmenu.getGrid(), primaryStage);
+        		}
         	}
-        	showGrid(state.getMaze(),mainmenu.getGrid(),primaryStage);
+        	//game is finished show window for next level
+        	if(isFinished(state.getMaze(), mainmenu.getGrid())) {
+        		mainmenu.getLevelComplete().setVisible(true);
+        		mainmenu.getStart().setOpacity(0.5);
         	}
         });
 
 	}
 
 
-	/*
+	/**
 	 * function that takes in maze to display it
 	 * 
 	 * @precondition: The columns and rows of a maze are uniform i.e. mazes must be n x m with not variation in between
 	 * 
 	 */
-	public void showGrid(int [][] map, GridPane grid, Stage primaryStage) {
+	public void showGrid(int[][]map, GridPane grid, Stage primaryStage) {
 		int rows = map.length;
 		int cols = map[0].length;
 		for(int i = 0; i < rows ; i++){
@@ -83,6 +91,7 @@ public class graphicsProcessor extends Application{
 				Rectangle newRect = new Rectangle(40,40);
 				newRect.setArcHeight(19);
 				newRect.setArcWidth(19);
+				newRect.setOpacity(1);
 				int blockType = map[i][j];
 				switch(blockType){
 					case -1: newRect.setFill(Color.BLACK); break;		//immovable
@@ -98,5 +107,26 @@ public class graphicsProcessor extends Application{
 	            primaryStage.show();
 			}
 		}
-	}	
+	}
+	
+	/**
+	 * This function determines if the game is finished
+	 * @param map column and rows of the map/maze
+	 * @param grid the gridpane of the GUI map
+	 * @return boolean
+	 */
+	//if no end points then game is finished
+	public boolean isFinished(int [][] map, GridPane grid) {
+		int rows = map.length;
+		int cols = map[0].length;
+		for(int i = 0; i < rows ; i++){
+			for(int j = 0; j < cols ; j++){
+				int blockType = map[i][j];
+				if(blockType == 3) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 }	
