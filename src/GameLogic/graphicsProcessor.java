@@ -26,7 +26,7 @@ public class graphicsProcessor extends Application{
 	 * the maze generated in the backend
 	 * Currently reads a file that has hardcoded the maze
 	 * 
-	 * 
+	 * asd
 	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
