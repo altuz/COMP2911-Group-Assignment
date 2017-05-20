@@ -37,7 +37,8 @@ public class graphicsProcessor extends Application{
 		
 		Scene scene = new Scene(mainmenu, W, H);
 		//create string object containing file name
-		Object o = "test_maze.txt";
+		//Object o = "test_maze.txt";
+		Object o = null;
 		//generate game state to display
 		GameState state = new GameState(o); 
 		primaryStage.setResizable(false);

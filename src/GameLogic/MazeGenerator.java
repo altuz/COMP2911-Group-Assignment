@@ -11,7 +11,6 @@ import Definitions.Blocks;
 public class MazeGenerator {
     private int[][] maze;
     private int[]   player_location;
-    private int[][] target;
     private ArrayList<int[]> end_blocks;
 
     /**
@@ -23,7 +22,10 @@ public class MazeGenerator {
      */
     public MazeGenerator(Object o) {
         end_blocks = new ArrayList<int[]>();
-        if (o instanceof Integer) {
+        if (o == null) {
+            this.maze = shuffleTest();
+        }
+        else if (o instanceof Integer) {
             this.maze = generateRandom((Integer) o);
         }
         else if (o instanceof String) {
@@ -31,8 +33,33 @@ public class MazeGenerator {
         }
     }
 
+    private int[][] shuffleTest(){
+        int[][] maze = new int[][]{
+                {-1, -1, -1, -1, -1, 0, -1, 0},
+                {-1, -1, 0, -1, -1, 0, 0, 0},
+                {0, 0, 2, 0, 2, 0, -1, -1},
+                {-1, -1, 0, 2, 1, 0, -1, 0},
+                {0, 0, 0, 2, 0, 0, 0, 0},
+                {0, 0, -1, 0, 0, 0, 0, 0},
+                {0, 2, 0, 0, 0, -1, 0, -1},
+                {0, 0, -1, -1, -1, -1, -1, -1}
+        };
+        State s = new State();
+        for(int i = 0; i < maze.length; i++){
+            for(int j = 0; j < maze.length; j++){
+                if(maze[i][j] == 2) s.addBox(new int[]{i, j});
+            }
+        }
+        s.setMatrix(maze);
+        s.setPlayerLoc(new int[]{3, 4});
+        s.shuffleLevel(100, 0);
+        //this.player_location = s.getPlayerLoc();
+        //this.end_blocks = s.getEndLoc();
+        int[][] p_maze = wallPadding(s.getMatrix());
+        return p_maze;
+    }
     /**
-     * TODO: Whole Function
+     * TODO: Whole Function,
      * http://www-users.cs.umn.edu/~bilal/papers/GIGA16_SOKOBAN.pdf
      * @param size + 2
      * @return
@@ -129,7 +156,29 @@ public class MazeGenerator {
 
         return loc_maze;
     }
+    private int[][] wallPadding(int[][] lvl){
+        int padded_size = lvl.length + 2;
+        int[][] padded_maze = new int[padded_size][padded_size];
+        for(int i = 0; i < lvl.length; i++){
+            for(int j = 0; j < lvl.length; j++){
+                padded_maze[i+1][j+1] = lvl[i][j];
+                switch (Blocks.get(padded_maze[i+1][j+1])) {
+                    case PLAYER: player_location = new int[] {i + 1, j + 1};
+                        break;
+                    case END_POINTS:
+                    case END_PLAYER:
+                    case END_BOXES: end_blocks.add(new int[] {i + 1, j + 1});
+                    default:
+                }
+            }
+        }
+        for(int i = 0; i < padded_size; i++){
+            padded_maze[0][i] = padded_maze[i][0] = Blocks.IMMOVABLES.getVal();
+            padded_maze[padded_size-1][i] = padded_maze[i][padded_size-1] = Blocks.IMMOVABLES.getVal();
+        }
 
+        return padded_maze;
+    }
     /**
      * Returns maze
      * @return

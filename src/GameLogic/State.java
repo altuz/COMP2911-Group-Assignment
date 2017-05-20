@@ -51,7 +51,6 @@ public class State {
             for(int[] bl : blcp){
                 if(this.matrix[bl[0]][bl[1]] == Blocks.END_BOXES.getVal()) {
                     j++;
-                    System.out.println(j+" j");
                 }
 
             }
@@ -60,8 +59,8 @@ public class State {
             this.box_locations = blDeepCopy(blcp);
             this.end_locations = new ArrayList<>();
             this.player_location = new int[]{plcp[0], plcp[1]};
-            System.out.println();
         }
+        this.player_location = new int[]{plcp[0], plcp[1]};
     }
 
     /**

@@ -23,7 +23,8 @@ public class test_state {
         }
         s.setMatrix(maze);
         s.setPlayerLoc(new int[]{3, 4});
-        
+        s.printGameMap();
+        System.out.println();
         s.shuffleLevel(100, 0);
         s.printGameMap();
     }
