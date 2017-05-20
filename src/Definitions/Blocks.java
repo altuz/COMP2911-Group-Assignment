@@ -1,5 +1,7 @@
 package Definitions;
 
+import java.util.Hashtable;
+
 /**
  * Created by altuz on 20/05/17.
  */
@@ -16,4 +18,12 @@ public enum Blocks {
     Blocks(int v){ this.val = v; }
     public int getVal(){ return this.val; }
     public static final Blocks values[] = values();
+
+    private static final Hashtable<Integer, Blocks> lookup = new Hashtable<>();
+    static {
+        for(Blocks b : Blocks.values()){
+            lookup.put(b.getVal(), b);
+        }
+    }
+    public static Blocks get(int i){ return lookup.get(i); }
 }
