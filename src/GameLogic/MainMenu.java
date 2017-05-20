@@ -14,7 +14,7 @@ public class MainMenu extends Parent {
 	private VBox option;
 	private VBox start;
 	private GridPane grid;
-	
+
 	public GridPane getGrid() {
 		return this.grid;
 	}

@@ -54,7 +54,6 @@ public class graphicsProcessor extends Application{
         	//call backend functions to change the maze array depending on key pressed
         	if(event.getCode() == KeyCode.RIGHT) {
         		state.player_move(Movement.RIGHT);
-        		
         	} else if(event.getCode() == KeyCode.LEFT) {
         		state.player_move(Movement.LEFT);
         	} else if(event.getCode() == KeyCode.UP) {
