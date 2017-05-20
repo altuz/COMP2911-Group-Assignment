@@ -23,14 +23,8 @@ public class test_state {
         }
         s.setMatrix(maze);
         s.setPlayerLoc(new int[]{3, 4});
-
-//        int[][] reachability = s.exploreReachability();
-//        for(int i = 0; i < maze.length; i++){
-//            for(int j = 0; j < maze.length; j++){
-//                System.out.printf("%3d\t", reachability[i][j]);
-//            }
-//            System.out.println();
-//        }
-        s.shuffleLevel(10);
+        
+        s.shuffleLevel(100, 0);
+        s.printGameMap();
     }
 }
