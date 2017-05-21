@@ -10,11 +10,13 @@ import java.util.ArrayList;
 public class Pushability {
     private int[] box_pos;
     private int pushable_dirs;
+    private int id;
     private ArrayList<Movement> dirs;
 
-    public Pushability(int[] a){
+    public Pushability(int[] a, int b){
         this.dirs = null;
         this.box_pos = new int[2];
+        this.id = b;
         this.box_pos[0] = a[0];
         this.box_pos[1] = a[1];
         pushable_dirs = Integer.MAX_VALUE;
@@ -28,6 +30,8 @@ public class Pushability {
         this.box_pos[0] = a[0];
         this.box_pos[1] = a[1];
     }
+
+    public int getId(){ return this.id; }
 
     public int getPushableDirs(){
         return this.pushable_dirs;
