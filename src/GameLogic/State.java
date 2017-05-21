@@ -2,13 +2,12 @@ package GameLogic;
 
 import Definitions.Blocks;
 import Definitions.Movement;
-import jdk.nashorn.internal.ir.Block;
-
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by Nicholas Mulianto on 20/05/17.
+ * Source Paper: http://www-users.cs.umn.edu/~bilal/papers/GIGA16_SOKOBAN.pdf
  */
 public class State {
     private int[][] matrix;
@@ -235,7 +234,7 @@ public class State {
         int alpha = 4;
         int beta = 4;
         int gamma = 1;
-        int total = 0;
+        int CONGESTION = 0;
         for(int i = 0; i < this.end_locations.size(); i++){
             // s = #boxes, g = #goals, o = #walls
             int s = 0, g = 0, o = 0;
@@ -266,9 +265,24 @@ public class State {
                 }
             }
 
-            total += (alpha * s + beta * g + gamma * o);
+            CONGESTION += (alpha * s + beta * g + gamma * o);
         }
-        return total;
+        return CONGESTION;
+    }
+
+    /**
+     * Evaluate level given the terrain metric and congestion metric
+     * @param terrain
+     * @param congestion
+     * @return
+     */
+    private double level_eval(int terrain, int congestion){
+        // normalization vector
+        int k = 200;
+        double combined = terrain * congestion;
+        double c_root = Math.sqrt(combined);
+        double value = c_root / k;
+        return value;
     }
     /**
      * move box in specified direction
