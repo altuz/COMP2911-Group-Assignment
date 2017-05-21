@@ -15,8 +15,8 @@ public class GameState{
      * Creates a new level and initialize player location.
      * If given an int, randomly generates maze.
      * If given a string, generate maze from file.
-     * TODO: RANDOM GENERATION
      * Object checked at MazeGenerator
+     * @author Nicholas Mulianto
      * @param o (String or Integer)
      */
     public GameState(Object o) {
@@ -46,6 +46,7 @@ public class GameState{
      * Usage: player_move(Movement.UP);
      *        player_move(Movement.DOWN);
      *        etc
+     * @author Nicholas Mulianto
      * @param dir
      * @return false if illegal move
      *         true if legal move
