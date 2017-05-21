@@ -85,39 +85,6 @@ public class MazeGenerator {
     }
 
     /**
-     * The sum of the number of obstacle numbers of all empty tiles.
-     * @author Nicholas Mulianto
-     * @param maze
-     * @return
-     */
-    private int terrain_eval(int[][] maze){
-        int TERRAIN = 0;
-        for(int i = 0; i < maze.length; i++){
-            for(int j = 0; j < maze.length; j++){
-                if(Blocks.values[maze[i][j]] != Blocks.SPACES ||
-                        Blocks.values[maze[i][j]] != Blocks.PLAYER ||
-                        Blocks.values[maze[i][j]] != Blocks.END_POINTS ||
-                        Blocks.values[maze[i][j]] != Blocks.END_PLAYER) continue;
-                // get number of neighours that are obstacles
-                int obstacle = 0;
-                ArrayList<Integer> neighbours = new ArrayList<>();
-                if(j > 0) neighbours.add(maze[i][j-1]); // check left
-                if(j < maze.length - 1) neighbours.add(maze[i][j+1]); // check right
-                if(i < 0) neighbours.add(maze[i-1][j]); // check up
-                if(i > maze.length - 1) neighbours.add((maze[i+1][j])); // check down
-                for(Integer k : neighbours)
-                switch(Blocks.values[k]){
-                    case BOXES:
-                    case END_BOXES:
-                    case IMMOVABLES: obstacle++;
-                    default: break;
-                }
-                TERRAIN += obstacle;
-            }
-        }
-        return TERRAIN;
-    }
-    /**
      * READS FILE AND GENERATE MAZE.
      * SPLITS ON WHITE SPACE A.K.A MAZE FILES HAVE TO BE SPACE SEPARATED
      * TODO: More test mazes (at least 3 mazes)

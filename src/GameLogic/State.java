@@ -2,13 +2,12 @@ package GameLogic;
 
 import Definitions.Blocks;
 import Definitions.Movement;
-import jdk.nashorn.internal.ir.Block;
-
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by Nicholas Mulianto on 20/05/17.
+ * Source Paper: http://www-users.cs.umn.edu/~bilal/papers/GIGA16_SOKOBAN.pdf
  */
 public class State {
     private int[][] matrix;
@@ -61,6 +60,7 @@ public class State {
             this.player_location = new int[]{plcp[0], plcp[1]};
         }
         this.player_location = new int[]{plcp[0], plcp[1]};
+        congestion_eval();
     }
 
     /**
@@ -78,6 +78,7 @@ public class State {
         ArrayList<int[]> blcp = blDeepCopy(this.box_locations);
         // another copy for 'queue'
         ArrayList<Pushability> queue = pushabilityList();
+        Hashtable<Integer, int[]> eloc = new Hashtable<>();
 
         for(int i = 0; i < max_move; i++){
             if(queue.isEmpty()) break;
@@ -100,6 +101,7 @@ public class State {
             );
             // remove first item in queue
             Pushability first = queue.remove(0);
+            eloc.put(first.getId(), first.getPos());
             if(first.getPushableDirs() == 0) continue;
             ArrayList<Movement> dirs = first.getDirs();
             int random_idx = (dirs.size() == 0) ? 0 : rng.nextInt(0, dirs.size());
@@ -110,10 +112,10 @@ public class State {
             this.matrix[n_pos[0]][n_pos[1]] = Blocks.BOXES.getVal();
             this.matrix[this.player_location[0]][this.player_location[1]] = Blocks.SPACES.getVal();
             this.player_location = o_pos;
-            Pushability new_stuff = new Pushability(n_pos);
+            Pushability new_stuff = new Pushability(n_pos, first.getId());
             queue.add(new_stuff);
         }
-        overlayMap(mxcp, blcp);
+        overlayMap(mxcp, blcp, eloc);
     }
     /**
      * Overlay old map with current map
@@ -122,16 +124,25 @@ public class State {
      * @param mx
      * @param bl_cp
      */
-    public void overlayMap(int[][] mx, ArrayList<int[]> bl_cp){
+    public void overlayMap(int[][] mx, ArrayList<int[]> bl_cp, Hashtable<Integer, int[]> eloc){
         for(int i = 0; i < this.matrix.length; i++){
             for(int j = 0; j < this.matrix.length; j++){
                 if(this.matrix[i][j] == Blocks.BOXES.getVal()) {
                     mx[i][j] += Blocks.END_POINTS.getVal();
-                    end_locations.add(new int[]{i, j});
                 }
             }
         }
+
+        for(int i = 0; i < eloc.keySet().size(); i++){
+            end_locations.add(eloc.get(i));
+            int[] p = this.box_locations.get(i);
+            int[] c = eloc.get(i);
+            //System.out.printf("(%d, %d) -> (%d, %d)\n", p[0], p[1], c[0], c[1]);
+        }
         this.matrix = mx.clone();
+//        System.out.printf("Terrain Metric = %d\n", terrain_eval());
+//        System.out.printf("Congestion Metric = %d\n", congestion_eval());
+//        printGameMap();
     }
     /**
      * From the current map state, find the list of blocks reachable by player.
@@ -179,6 +190,100 @@ public class State {
         return reachability;
     }
 
+    /**
+     * The sum of the number of obstacle numbers of all empty tiles.
+     * @author Nicholas Mulianto
+     * @param
+     * @return
+     */
+    private int terrain_eval(){
+        int TERRAIN = 0;
+        for(int i = 0; i < this.matrix.length; i++){
+            for(int j = 0; j < this.matrix.length; j++){
+                if( this.matrix[i][j] == Blocks.SPACES.getVal() ||
+                        this.matrix[i][j] == Blocks.PLAYER.getVal() ||
+                        this.matrix[i][j] == Blocks.END_POINTS.getVal() ||
+                        this.matrix[i][j] == Blocks.END_PLAYER.getVal()) continue;
+                // get number of neighours that are obstacles
+                int obstacle = 0;
+                ArrayList<Integer> neighbours = new ArrayList<>();
+                if(j > 0) neighbours.add(this.matrix[i][j-1]); // check left
+                if(j < this.matrix.length - 1) neighbours.add(this.matrix[i][j+1]); // check right
+                if(i < 0) neighbours.add(this.matrix[i-1][j]); // check up
+                if(i > this.matrix.length - 1) neighbours.add((this.matrix[i+1][j])); // check down
+                for(Integer k : neighbours)
+                    switch(Blocks.get(k)){
+                        case BOXES:
+                        case END_BOXES:
+                        case IMMOVABLES: obstacle++;
+                        default: break;
+                    }
+                TERRAIN += obstacle;
+            }
+        }
+        return TERRAIN;
+    }
+
+    /**
+     * Calculates the congestion from a box location to it's respective end zone.
+     * @author Nicholas Mulianto
+     * @param
+     * @return
+     */
+    private int congestion_eval(){
+        int alpha = 4;
+        int beta = 4;
+        int gamma = 1;
+        int CONGESTION = 0;
+        for(int i = 0; i < this.end_locations.size(); i++){
+            // s = #boxes, g = #goals, o = #walls
+            int s = 0, g = 0, o = 0;
+            int[] bi = this.box_locations.get(i);
+            int[] bf = this.end_locations.get(i);
+            int bi_y = bi[0], bi_x = bi[1];
+            int bf_y = bi[0], bf_x = bf[1];
+            int[] y_range = (bi_y < bf_y) ? new int[]{ bi_y, bf_y } : new int[]{ bf_y, bi_y };
+            int[] x_range = (bi_x < bf_x) ? new int[]{ bi_x, bf_x } : new int[]{ bf_x, bi_x };
+
+            for(int y = y_range[0]; y <= y_range[1]; y++){
+                for(int x = x_range[0]; x <= x_range[1]; x++){
+                    switch(Blocks.get(this.matrix[y][x])){
+                        case END_BOXES:
+                            // penalize if BOX already at GOAL by not adding
+                            break;
+                        case BOXES:
+                            s++;
+                            break;
+                        case END_POINTS:
+                        case END_PLAYER:
+                            g++;
+                            break;
+                        case IMMOVABLES:
+                            o++;
+                            break;
+                    }
+                }
+            }
+
+            CONGESTION += (alpha * s + beta * g + gamma * o);
+        }
+        return CONGESTION;
+    }
+
+    /**
+     * Evaluate level given the terrain metric and congestion metric
+     * @param terrain
+     * @param congestion
+     * @return
+     */
+    private double level_eval(int terrain, int congestion){
+        // normalization vector
+        int k = 200;
+        double combined = terrain * congestion;
+        double c_root = Math.sqrt(combined);
+        double value = c_root / k;
+        return value;
+    }
     /**
      * move box in specified direction
      * @author Nicholas Mulianto
@@ -247,7 +352,7 @@ public class State {
     private ArrayList<Pushability> pushabilityList(){
         ArrayList<Pushability> plist = new ArrayList<>();
         for(int i = 0; i < this.box_locations.size(); i++){
-            Pushability n = new Pushability(this.box_locations.get(i));
+            Pushability n = new Pushability(this.box_locations.get(i), i);
             plist.add(n);
         }
         return plist;
