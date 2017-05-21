@@ -2,6 +2,7 @@ package GameLogic;
 
 import javafx.application.Application;
 import Definitions.Movement;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
@@ -78,11 +79,16 @@ public class graphicsProcessor extends Application{
 	public void showGrid(int [][] map, GridPane grid, Stage primaryStage) {
 		int rows = map.length;
 		int cols = map[0].length;
+		
+		//remove old elements in grid from previous rendition 
+		grid.getChildren().clear();
 		for(int i = 0; i < rows ; i++){
 			for(int j = 0; j < cols ; j++){
 				Rectangle newRect = new Rectangle(40,40);
 				newRect.setArcHeight(19);
-				newRect.setArcWidth(19);
+				newRect.setArcWidth(19); 
+				
+				
 				int blockType = map[i][j];
 				switch(blockType){
 					case -1: newRect.setFill(Color.BLACK); break;		//immovable
@@ -99,4 +105,6 @@ public class graphicsProcessor extends Application{
 			}
 		}
 	}	
+	
+
 }	
