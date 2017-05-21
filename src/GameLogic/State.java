@@ -14,12 +14,14 @@ public class State {
     private int[] player_location;
     private ArrayList<int[]> box_locations;
     private ArrayList<int[]> end_locations;
+    private double value;
 
     public State(){
-        matrix = null;
-        player_location = null;
-        box_locations = new ArrayList<int[]>();
-        end_locations = new ArrayList<int[]>();
+        this.value = 0;
+        this.matrix = null;
+        this.player_location = null;
+        this.box_locations = new ArrayList<int[]>();
+        this.end_locations = new ArrayList<int[]>();
     }
 
     public void setMatrix(int[][] m){ this.matrix = m.clone(); }
@@ -38,13 +40,14 @@ public class State {
      * if too many of the boxes stay at the same place, repeat.
      * @param max_move
      */
-    public void shuffleLevel(int max_move, int max_stationary){
+    public void shuffleLevel(int max_move, int max_shuffle){
         // deep copy of relevant fields
         int[][] mxcp = matrixDeepCopy(this.matrix);
         ArrayList<int[]> blcp = blDeepCopy(this.box_locations);
         int[] plcp = new int[]{this.player_location[0], this.player_location[1]};
+        EvalLevel bestLevel = new EvalLevel(null, 0);
         // another copy for 'queue'
-        for(int i = 0; i < max_move; i++){
+        for(int i = 0; i < max_shuffle; i++){
             shuffleHelper(max_move);
             int j = 0;
             for(int[] bl : blcp){
@@ -53,14 +56,23 @@ public class State {
                 }
 
             }
-            if(j <= max_stationary) break;
+            int cong = congestion_eval();
+            int terr = terrain_eval();
+            double levl = level_eval(terr, cong);
+            if(levl > bestLevel.getEval()) {
+                int[][] mcp = matrixDeepCopy(this.matrix);
+                bestLevel = new EvalLevel(mcp, levl);
+            }
+
             this.matrix = matrixDeepCopy(mxcp);
             this.box_locations = blDeepCopy(blcp);
             this.end_locations = new ArrayList<>();
             this.player_location = new int[]{plcp[0], plcp[1]};
         }
         this.player_location = new int[]{plcp[0], plcp[1]};
-        congestion_eval();
+        this.matrix = bestLevel.getMx();
+        this.value = bestLevel.getEval();
+        System.out.println(this.value);
     }
 
     /**
@@ -250,6 +262,7 @@ public class State {
                     switch(Blocks.get(this.matrix[y][x])){
                         case END_BOXES:
                             // penalize if BOX already at GOAL by not adding
+                            s--;
                             break;
                         case BOXES:
                             s++;
@@ -357,4 +370,17 @@ public class State {
         }
         return plist;
     }
+
+    static private class EvalLevel{
+        private int[][] mx;
+        private double eval;
+        private EvalLevel(int[][] m, double e){
+            this.mx = m;
+            this.eval = e;
+        }
+
+        private double getEval(){ return this.eval; }
+        private int[][] getMx(){ return this.mx; }
+    }
 }
+

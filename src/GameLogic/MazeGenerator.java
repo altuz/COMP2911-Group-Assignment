@@ -52,7 +52,7 @@ public class MazeGenerator {
         }
         s.setMatrix(maze);
         s.setPlayerLoc(new int[]{3, 4});
-        s.shuffleLevel(100, 0);
+        s.shuffleLevel(100, 10);
         //this.player_location = s.getPlayerLoc();
         //this.end_blocks = s.getEndLoc();
         int[][] p_maze = wallPadding(s.getMatrix());
