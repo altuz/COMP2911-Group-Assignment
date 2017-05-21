@@ -4,6 +4,8 @@ import java.util.Hashtable;
 
 /**
  * Created by altuz on 20/05/17.
+ * Definitions for game cells.
+ * @author Nicholas Mulianto
  */
 public enum Blocks {
     PLAYER(1),
