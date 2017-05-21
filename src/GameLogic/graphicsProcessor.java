@@ -121,9 +121,18 @@ public class graphicsProcessor extends Application{
 		primaryStage.show();
 	}
 	
+
+	/*
+	 * function that takes in maze to display it
+	 * 
+	 * @precondition: The columns and rows of a maze are uniform i.e. mazes must be n x m with not variation in between
+	 * 
+	 */
 	public void createMap(int [][] map,Pane root,  Stage primaryStage) {
 		int rows = map.length;
 		int cols = map[0].length;
+		//remove old elements in pane from previous rendition 
+		root.getChildren().clear();
 		root.setPrefSize(W,H);
 		root.setBackground(new Background(new BackgroundFill(Color.rgb(255, 242, 204), CornerRadii.EMPTY, Insets.EMPTY)));
 		for(int y = 0; y < rows; y++){
@@ -133,7 +142,7 @@ public class graphicsProcessor extends Application{
 				root.getChildren().add(tile);
 			}
 		}		
-		//root.show();
+		
 		primaryStage.show();
 	}
 	
