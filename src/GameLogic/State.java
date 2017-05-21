@@ -59,6 +59,8 @@ public class State {
             int cong = congestion_eval();
             int terr = terrain_eval();
             double levl = level_eval(terr, cong);
+            // System.out.println(levl);
+
             if(levl > bestLevel.getEval()) {
                 int[][] mcp = matrixDeepCopy(this.matrix);
                 bestLevel = new EvalLevel(mcp, levl);
