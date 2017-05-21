@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 public class MainMenu extends Parent {
@@ -13,9 +14,9 @@ public class MainMenu extends Parent {
 	private VBox gameoptions;
 	private VBox option;
 	private VBox start;
-	private GridPane grid;
+	private Pane grid;
 
-	public GridPane getGrid() {
+	public Pane getGrid() {
 		return this.grid;
 	}
 	
@@ -40,11 +41,11 @@ public class MainMenu extends Parent {
 	}
 	
 	public MainMenu(int W, int H) {
-		GridPane grid = new GridPane();
+		Pane grid = new GridPane();
 		grid.setPrefSize(W, H);
 		grid.setPadding(new Insets(10,10,10,10));
-		grid.setVgap(3);
-		grid.setHgap(3);
+		//grid.setVgap(3);
+		//grid.setHgap(3);
 		grid.setVisible(false);
 		this.grid = grid;
 
@@ -150,7 +151,7 @@ public class MainMenu extends Parent {
 			
 		});
 		
-		grid.setAlignment(Pos.CENTER);
+		//grid.setAlignment(Pos.CENTER);
 		
 		main.getChildren().addAll(newgame, options1, tutorial, exit);
 		optionmenu.getChildren().addAll(sound, back1, exit1);
