@@ -1,4 +1,5 @@
 package GameLogic;
+
 import Definitions.Blocks;
 import Definitions.Movement;
 import java.util.*;
@@ -13,82 +14,53 @@ public class State {
     private int[] player_location;
     private ArrayList<int[]> box_locations;
     private ArrayList<int[]> end_locations;
-    private double value;
 
-    /**
-     * Initializes state to NOTHING
-     * FUCKING NOTHING
-     * @author Nicholas Mulianto
-     */
     public State(){
-        this.value = 0;
-        this.matrix = null;
-        this.player_location = null;
-        this.box_locations = new ArrayList<int[]>();
-        this.end_locations = new ArrayList<int[]>();
+        matrix = null;
+        player_location = null;
+        box_locations = new ArrayList<int[]>();
+        end_locations = new ArrayList<int[]>();
     }
 
-    /*
-     * Boring book keeping methods.
-     * setMatrix - stores given matrix
-     * setPlayerLoc - stores given player location
-     * addBox - insert box index
-     * addEnd - insert goal index
-     */
     public void setMatrix(int[][] m){ this.matrix = m.clone(); }
     public void setPlayerLoc(int[] pl){ this.player_location = pl.clone(); }
     public void addBox(int[] bl){ box_locations.add(bl); }
     public void addEnd(int[] el){ end_locations.add(el); }
 
-    /*
-     * Boring getters
-     */
     public int[][] getMatrix(){ return this.matrix; }
     public int[] getPlayerLoc(){ return this.player_location; }
     public ArrayList getBoxLoc(){ return this.box_locations; }
     public ArrayList getEndLoc(){ return this.end_locations; }
 
     /**
-     * calls shuffleHelper up to max_shuffle number of times.
-     * Each shuffle can take up to max_move number of times
-     *      - due to randomness, shuffleHelper might not produce a good solution
-     *      - if too many of the boxes stay at the same place, repeat.
-     * @author Nicholas Mulianto
+     * calls shuffleHelper
+     * due to randomness, shuffleHelper might not produce a good solution.
+     * if too many of the boxes stay at the same place, repeat.
      * @param max_move
-     * @param max_shuffle
      */
-    public void shuffleLevel(int max_move, int max_shuffle){
+    public void shuffleLevel(int max_move, int max_stationary){
         // deep copy of relevant fields
         int[][] mxcp = matrixDeepCopy(this.matrix);
         ArrayList<int[]> blcp = blDeepCopy(this.box_locations);
         int[] plcp = new int[]{this.player_location[0], this.player_location[1]};
-        EvalLevel bestLevel = new EvalLevel(null, 0);
         // another copy for 'queue'
-        for(int i = 0; i < max_shuffle; i++){
-            // shuffle matrix
+        for(int i = 0; i < max_move; i++){
             shuffleHelper(max_move);
-            // evaluate metrics
-            int cong = congestion_eval();
-            int terr = terrain_eval();
-            double levl = level_eval(terr, cong);
-            // compare this level's metric with previous iterations
-            // if metric is larger, we assume it is a more interesting level
-            // not sure if actually true but paper says its a good assumption
-            if(levl > bestLevel.getEval()) {
-                int[][] mcp = matrixDeepCopy(this.matrix);
-                bestLevel = new EvalLevel(mcp, levl);
+            int j = 0;
+            for(int[] bl : blcp){
+                if(this.matrix[bl[0]][bl[1]] == Blocks.END_BOXES.getVal()) {
+                    j++;
+                }
+
             }
-            // reinstate original matrix, box location and player location
-            // reinitialize end locations
+            if(j <= max_stationary) break;
             this.matrix = matrixDeepCopy(mxcp);
             this.box_locations = blDeepCopy(blcp);
             this.end_locations = new ArrayList<>();
             this.player_location = new int[]{plcp[0], plcp[1]};
         }
-        // overwrite level with best found level
         this.player_location = new int[]{plcp[0], plcp[1]};
-        this.matrix = bestLevel.getMx();
-        this.value = bestLevel.getEval();
+        congestion_eval();
     }
 
     /**
@@ -106,62 +78,48 @@ public class State {
         ArrayList<int[]> blcp = blDeepCopy(this.box_locations);
         // another copy for 'queue'
         ArrayList<Pushability> queue = pushabilityList();
-        // hashtable stores the end position of the boxes
-        // the key refers to the box's corresponding index in the box_locations arraylist
         Hashtable<Integer, int[]> eloc = new Hashtable<>();
-        // repeat until max moves or until no boxes can be moved
+
         for(int i = 0; i < max_move; i++){
             if(queue.isEmpty()) break;
-            // compute reachability matrix
+            // compute reachability
             int[][] reachability = exploreReachability();
-            // for each box, compute their 'pushability'
-            // aka how many ways box can be pushed
             for(Pushability push : queue){
                 int pushDirs = push.findPushableDirections(this.matrix, reachability);
                 push.setPushableDirs(pushDirs);
             }
-            // sort queue decreasing order of pushability
-            // if items have same degree of pushability we randomize the order
+            // sort queue increasing order
             queue.sort(
-                new Comparator<Pushability>() {
-                    @Override
-                    public int compare(Pushability o1, Pushability o2) {
-                        if(o1.getPushableDirs() == o2.getPushableDirs())
-                            return ThreadLocalRandom.current().nextInt(-1, 2);
-                        return o2.getPushableDirs() - o1.getPushableDirs();
+                    new Comparator<Pushability>() {
+                        @Override
+                        public int compare(Pushability o1, Pushability o2) {
+                            if(o1.getPushableDirs() == o2.getPushableDirs())
+                                return ThreadLocalRandom.current().nextInt(-1, 2);
+                            return o2.getPushableDirs() - o1.getPushableDirs();
+                        }
                     }
-                }
             );
             // remove first item in queue
             Pushability first = queue.remove(0);
-            // update hashtable
             eloc.put(first.getId(), first.getPos());
-            // if not pushable then don't put it back to queue
             if(first.getPushableDirs() == 0) continue;
             ArrayList<Movement> dirs = first.getDirs();
-            // choose random direction from the list of possible push directions
             int random_idx = (dirs.size() == 0) ? 0 : rng.nextInt(0, dirs.size());
             Movement dir = dirs.get(random_idx);
-            // o_pos = original pos, n_pos = new pos
             int[] o_pos = first.getPos();
             int[] n_pos = moveBox(dir, first.getPos());
-            // update matrix cells
             this.matrix[o_pos[0]][o_pos[1]] = Blocks.PLAYER.getVal();
             this.matrix[n_pos[0]][n_pos[1]] = Blocks.BOXES.getVal();
             this.matrix[this.player_location[0]][this.player_location[1]] = Blocks.SPACES.getVal();
             this.player_location = o_pos;
-            // put new box location to queue
             Pushability new_stuff = new Pushability(n_pos, first.getId());
             queue.add(new_stuff);
         }
-        // overlay finished map with original map
         overlayMap(mxcp, blcp, eloc);
     }
     /**
-     * 'Overlays' old map with current map
+     * Overlay old map with current map
      * New box locations become end zones
-     * this.matrix is the new matrix
-     * param mx is the old matrix
      * @author Nicholas Mulianto
      * @param mx
      * @param bl_cp
@@ -170,17 +128,21 @@ public class State {
         for(int i = 0; i < this.matrix.length; i++){
             for(int j = 0; j < this.matrix.length; j++){
                 if(this.matrix[i][j] == Blocks.BOXES.getVal()) {
-                    // for each index (i, j) of the new matrix
-                    // if the value in said index is a box, we make that same index in the old matrix an end zone
                     mx[i][j] += Blocks.END_POINTS.getVal();
                 }
             }
         }
-        // store end locations
+
         for(int i = 0; i < eloc.keySet().size(); i++){
             end_locations.add(eloc.get(i));
+            int[] p = this.box_locations.get(i);
+            int[] c = eloc.get(i);
+            //System.out.printf("(%d, %d) -> (%d, %d)\n", p[0], p[1], c[0], c[1]);
         }
-        this.matrix = mx;
+        this.matrix = mx.clone();
+//        System.out.printf("Terrain Metric = %d\n", terrain_eval());
+//        System.out.printf("Congestion Metric = %d\n", congestion_eval());
+//        printGameMap();
     }
     /**
      * From the current map state, find the list of blocks reachable by player.
@@ -269,7 +231,6 @@ public class State {
      * @return
      */
     private int congestion_eval(){
-        // constants in the equation stated in the journal
         int alpha = 4;
         int beta = 4;
         int gamma = 1;
@@ -281,8 +242,6 @@ public class State {
             int[] bf = this.end_locations.get(i);
             int bi_y = bi[0], bi_x = bi[1];
             int bf_y = bi[0], bf_x = bf[1];
-            // rearrange the X and Y coordinates
-            // such that x_range[0] <= x_range[1], same with y_range
             int[] y_range = (bi_y < bf_y) ? new int[]{ bi_y, bf_y } : new int[]{ bf_y, bi_y };
             int[] x_range = (bi_x < bf_x) ? new int[]{ bi_x, bf_x } : new int[]{ bf_x, bi_x };
 
@@ -291,7 +250,6 @@ public class State {
                     switch(Blocks.get(this.matrix[y][x])){
                         case END_BOXES:
                             // penalize if BOX already at GOAL by not adding
-                            s--;
                             break;
                         case BOXES:
                             s++;
@@ -306,7 +264,7 @@ public class State {
                     }
                 }
             }
-            // again, see the linked paper on top
+
             CONGESTION += (alpha * s + beta * g + gamma * o);
         }
         return CONGESTION;
@@ -314,8 +272,6 @@ public class State {
 
     /**
      * Evaluate level given the terrain metric and congestion metric
-     * See linked article for detail
-     * @author Nicholas Mulianto
      * @param terrain
      * @param congestion
      * @return
@@ -330,7 +286,6 @@ public class State {
     }
     /**
      * move box in specified direction
-     * returns new box index
      * @author Nicholas Mulianto
      * @param dir
      * @param box_loc
@@ -349,10 +304,6 @@ public class State {
         return new int[]{y, x};
     }
 
-    /**
-     * prints ascii game map
-     * @author Nicholas Mulianto
-     */
     public void printGameMap() {
         // nested loop to print out the 2D array
         for (int i = 0 ; i < this.matrix.length ; i++) {
@@ -406,20 +357,4 @@ public class State {
         }
         return plist;
     }
-
-    /**
-     * private class to store best level
-     */
-    private class EvalLevel{
-        private int[][] mx;
-        private double eval;
-        private EvalLevel(int[][] m, double e){
-            this.mx = m;
-            this.eval = e;
-        }
-
-        private double getEval(){ return this.eval; }
-        private int[][] getMx(){ return this.mx; }
-    }
 }
-
