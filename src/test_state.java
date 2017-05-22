@@ -1,3 +1,4 @@
+import GameLogic.GameState;
 import GameLogic.State;
 
 /**
@@ -26,6 +27,8 @@ public class test_state {
         s.printGameMap();
         System.out.println();
         s.shuffleLevel(100, 0);
-        s.printGameMap();
+
+        GameState gs = new GameState(8);
+        gs.printGameMap();
     }
 }

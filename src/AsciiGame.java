@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class AsciiGame {
     public static void main(String args[]) {
         // change the path to the test_maze as necessary.
-        GameState test_game = new GameState("/home/altuz/IdeaProjects/COMP2911-Group-Assignment/src/GameLogic/test_maze");
+        GameState test_game = new GameState(8);
         Scanner in = new Scanner(System.in);
         print_maze(test_game.getMaze());
         while (!test_game.game_over()) {
