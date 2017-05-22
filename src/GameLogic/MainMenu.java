@@ -2,13 +2,18 @@ package GameLogic;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 public class MainMenu extends Parent {
 	private VBox main;
@@ -138,12 +143,6 @@ public class MainMenu extends Parent {
 			s.getMouseClicked().play();
 		});
 		
-		/*Button options = new Button("OPTIONS");
-		options.setOnMouseClicked(event -> {
-			option.setVisible(true);
-			gameoptions.setVisible(false);
-		});*/
-		
 		Button options1 = new Button("OPTIONS", s);
 		options1.setOnMouseClicked(event -> {
 			getChildren().add(optionmenu);
@@ -156,17 +155,13 @@ public class MainMenu extends Parent {
 		});
 		
 		//Does not work yet
+
 		Button sound = new Button("SOUND", s);
 		sound.setOnMouseClicked(event -> {
-			optionmenu.setVisible(false);
-			soundoption.setVisible(true);
+			gameoptions.setVisible(false);
+			getChildren().add(soundoption);
 		});
 		sound.setOnMousePressed(event -> {
-			s.getMouseClicked().stop();
-			s.getMouseClicked().play();
-		});
-		Button sound1 = new Button("SOUND", s);
-		sound1.setOnMousePressed(event -> {
 			s.getMouseClicked().stop();
 			s.getMouseClicked().play();
 		});
@@ -196,6 +191,13 @@ public class MainMenu extends Parent {
 			main.setVisible(true);
 			getChildren().remove(optionmenu);
 		});
+		
+		Button back2 = new Button("BACK", s);
+		back2.setOnMouseClicked(event -> {
+			gameoptions.setVisible(true);
+			getChildren().remove(soundoption);
+		});
+		
 		back1.setOnMousePressed(event -> {
 			s.getMouseClicked().stop();
 			s.getMouseClicked().play();
@@ -253,15 +255,140 @@ public class MainMenu extends Parent {
 			s.getMouseClicked().stop();
 			s.getMouseClicked().play();
 		});
+
+		Button soundoff = new Button("SOUND OFF", s);
+		Button soundon = new Button("SOUND ON", s);
+		soundoff.setOnMousePressed(event -> {
+			optionmenu.getChildren().remove(back1);
+			optionmenu.getChildren().remove(soundoff);
+			optionmenu.getChildren().addAll(soundon, back1);
+			s.unmute(s.getThud(), s.getMove(), s.getLevelComplete(), s.getMouseHover(), s.getMouseClicked(), s.getEndPoint());
+		});
+		soundon.setOnMousePressed(event -> {
+			optionmenu.getChildren().remove(back1);
+			optionmenu.getChildren().remove(soundon);
+			optionmenu.getChildren().addAll(soundoff, back1);
+			s.muteSound(s.getThud(), s.getMove(), s.getLevelComplete(), s.getMouseHover(), s.getMouseClicked(), s.getEndPoint());
+		});
+	
+		Button musicon = new Button("MUSIC ON", s);
+		Button musicoff = new Button("MUSIC OFF", s);
+		musicon.setOnMousePressed(event -> {
+			int k = 0;
+			for(int i = 0; i < optionmenu.getChildren().size(); i++) {
+				if(optionmenu.getChildren().get(i).equals(soundon)) {
+					optionmenu.getChildren().remove(back1);
+					optionmenu.getChildren().remove(soundon);
+					optionmenu.getChildren().remove(musicon);
+					optionmenu.getChildren().addAll(musicoff, soundon, back1);
+					s.mutemusic(s.getMusic());
+					k = 1;
+				}
+			}
+			
+			if(k == 0) {
+				optionmenu.getChildren().remove(back1);
+				optionmenu.getChildren().remove(soundoff);
+				optionmenu.getChildren().remove(musicon);
+				optionmenu.getChildren().addAll(musicoff, soundoff, back1);
+				s.mutemusic(s.getMusic());
+			};
+			
+		});
+		
+		musicoff.setOnMousePressed(event -> {
+			int k = 0;
+			for(int i = 0; i < optionmenu.getChildren().size(); i++) {
+				if(optionmenu.getChildren().get(i).equals(soundon)) {
+					optionmenu.getChildren().remove(back1);
+					optionmenu.getChildren().remove(soundon);
+					optionmenu.getChildren().remove(musicoff);
+					optionmenu.getChildren().addAll(musicon, soundon, back1);
+					s.unmutemusic(s.getMusic());
+					k = 1;
+				}
+			}
+			if(k == 0) {
+				optionmenu.getChildren().remove(back1);
+				optionmenu.getChildren().remove(soundoff);
+				optionmenu.getChildren().remove(musicoff);
+				optionmenu.getChildren().addAll(musicon, soundoff, back1);
+				s.unmutemusic(s.getMusic());
+			}
+			
+		});
+		
+		Button soundoff1 = new Button("SOUND OFF", s);
+		Button soundon1 = new Button("SOUND ON", s);
+		soundoff1.setOnMousePressed(event -> {
+			soundoption.getChildren().remove(back2);
+			soundoption.getChildren().remove(soundoff1);
+			soundoption.getChildren().addAll(soundon1, back2);
+			s.unmute(s.getThud(), s.getMove(), s.getLevelComplete(), s.getMouseHover(), s.getMouseClicked(), s.getEndPoint());
+		});
+		soundon1.setOnMousePressed(event -> {
+			soundoption.getChildren().remove(back2);
+			soundoption.getChildren().remove(soundon1);
+			soundoption.getChildren().addAll(soundoff1, back2);
+			s.muteSound(s.getThud(), s.getMove(), s.getLevelComplete(), s.getMouseHover(), s.getMouseClicked(), s.getEndPoint());
+		});
+	
+		Button musicon1 = new Button("MUSIC ON", s);
+		Button musicoff1 = new Button("MUSIC OFF", s);
+		musicon1.setOnMousePressed(event -> {
+			int k = 0;
+			for(int i = 0; i < soundoption.getChildren().size(); i++) {
+				if(soundoption.getChildren().get(i).equals(soundon1)) {
+					soundoption.getChildren().remove(back2);
+					soundoption.getChildren().remove(soundon1);
+					soundoption.getChildren().remove(musicon1);
+					soundoption.getChildren().addAll(musicoff1, soundon1, back2);
+					s.mutemusic(s.getMusic());
+					k = 1;
+				}
+			}
+			
+			if(k == 0) {
+				soundoption.getChildren().remove(back2);
+				soundoption.getChildren().remove(soundoff1);
+				soundoption.getChildren().remove(musicon1);
+				soundoption.getChildren().addAll(musicoff1, soundoff1, back2);
+				s.mutemusic(s.getMusic());
+			};
+			
+		});
+		
+		musicoff1.setOnMousePressed(event -> {
+			int k = 0;
+			for(int i = 0; i < soundoption.getChildren().size(); i++) {
+				if(soundoption.getChildren().get(i).equals(soundon1)) {
+					soundoption.getChildren().remove(back2);
+					soundoption.getChildren().remove(soundon1);
+					soundoption.getChildren().remove(musicoff1);
+					soundoption.getChildren().addAll(musicon1, soundon1, back2);
+					s.unmutemusic(s.getMusic());
+					k = 1;
+				}
+			}
+			if(k == 0) {
+				soundoption.getChildren().remove(back2);
+				soundoption.getChildren().remove(soundoff1);
+				soundoption.getChildren().remove(musicoff1);
+				soundoption.getChildren().addAll(musicon1, soundoff1, back2);
+				s.unmutemusic(s.getMusic());
+			}
+			
+		});
 		
 		main.getChildren().addAll(newgame, options1, tutorial, exit);
-		optionmenu.getChildren().addAll(sound, back1, exit1);
-		gameoptions.getChildren().addAll(resume, restart, sound1, mainmenu, exit2);
-		start.getChildren().addAll(grid);
+		optionmenu.getChildren().addAll(musicon, soundon, back1);
+		gameoptions.getChildren().addAll(resume, restart, sound, mainmenu, exit2);
+		soundoption.getChildren().addAll(musicon1, soundon1, back2);
 		levelcomplete.getChildren().addAll(cont);
+		start.getChildren().addAll(grid);
 		start.setOnKeyPressed (event -> {
 			if(event.getCode() == KeyCode.ESCAPE) {
-				if(gameoptions.isVisible() == false && /*option.isVisible() == false &&*/ levelcomplete.isVisible() == false) {
+				if(gameoptions.isVisible() == false && soundoption.isVisible() == false && levelcomplete.isVisible() == false) {
 					gameoptions.setVisible(true);
 					start.setOpacity(0.5);
 					s.getMouseClicked().stop();
