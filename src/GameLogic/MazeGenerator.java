@@ -27,7 +27,7 @@ public class MazeGenerator {
             this.maze = shuffleTest(null);
         }
         else if (o instanceof Integer) {
-            this.maze = randomGen((Integer) o, 4);
+            this.maze = generateRandom((Integer) o);
         }
         else if (o instanceof String) {
             this.maze = generateFromFile((String) o);
@@ -36,7 +36,6 @@ public class MazeGenerator {
 
     public MazeGenerator(int size, int lim_box){
         this.maze = randomGen(size, lim_box);
-
     }
 
     private int[][] shuffleTest(int[][] mx){
@@ -171,12 +170,12 @@ public class MazeGenerator {
         int maximumBoxes = size/2;
         int[][] loc_maze = new int[padded_size][padded_size];
         int[][] act_maze = new int[size][size];
-        
+
         // initialize
         for(int i = 0; i < size; i++){
             Arrays.fill(act_maze[i], -1);
         }
-        
+
         // put agent/player in middle
         int mid = (size+1)/2;
         int[] agent = new int[]{ mid, mid };
@@ -186,64 +185,71 @@ public class MazeGenerator {
         MatrixState initMatrix = new MatrixState(act_maze, 0);
         open.add(initMatrix); // add the initial maze to the open list
         long startTime = System.currentTimeMillis();
-        long endTime = startTime + 2000; // set the end time to be 2 seconds after the current time
-        
-        
+        long endTime = startTime + 100; // set the end time to be 2 seconds after the current time
+
+
         // loop to randomly generate matrices
         while (startTime < endTime) {
-        	MatrixState currMatrix = open.remove(0); // remove the first index
-        	int[][] matrix = currMatrix.getMatrix();
-        	boolean changeFlag = false; // a flag to handle if we have made a change
-        	closed.add(currMatrix); // add the matrix to the closed list
-        	
-        	// nested for loop to iterate through the matrix
-        	for (int i = 0 ; i < matrix.length ; i++) {
-                for (int j = 0 ; j < matrix[i].length ; j++) {
-                	// if we find an open space
-                	if (matrix[i][j] == 0) {
-                		// 50/50 probability of making a change
-                		if (random.nextBoolean()) {
-                			// 50/50 probability of creating a blank space or a box
-                			if (random.nextBoolean()) {
-                				// create an open space
-                				changeFlag = deleteObstacle(i, j, matrix, size); // attempt to create an open space
-                				MatrixState newMatrix = new MatrixState(matrix, currMatrix.getNumBlocks());
-            					open.add(newMatrix);
-                			} else {
-                				// ensures that we have not exceeded the maximum number of boxes we can have in the game
-                				if (currMatrix.getNumBlocks() >= maximumBoxes) {
-                					// TODO: also store the exact location of all the boxes
-                					int numberOfBoxes = currMatrix.getNumBlocks();
-                					matrix[i][j] = 3;
-                					currMatrix.incrementNumBlocks();
-                					changeFlag = true;
-                					MatrixState newMatrix = new MatrixState(matrix, numberOfBoxes+1);
-                					open.add(newMatrix); // add the new matrix to the open list
-                				} else {
-                					changeFlag = deleteObstacle(i, j, matrix, size);
-                					MatrixState newMatrix = new MatrixState(matrix, currMatrix.getNumBlocks());
-                					open.add(newMatrix);
-                				}
-                			}
-                		} else {
-                			// do nothing
-                			continue;
-                		}
-                	}
+            MatrixState currMatrix = open.remove(0); // remove the first index
+            int currBoxNum = currMatrix.getNumBlocks();
+            int[][] matrix = currMatrix.getMatrix();
+            boolean changeFlag = false; // a flag to handle if we have made a change
+            closed.add(currMatrix); // add the matrix to the closed list
+
+            // nested for loop to iterate through the matrix
+            for (int i = 0 ; i < matrix.length  && !changeFlag; i++) {
+                for (int j = 0 ; j < matrix[i].length && !changeFlag; j++) {
+                    // if we find an open space
+                    if (matrix[i][j] == 0 || matrix[i][j] == 3) {
+                        // 50/50 probability of making a change
+                        if (random.nextBoolean()) {
+                            // 50/50 probability of creating a blank space or a box
+                            if (random.nextBoolean()) {
+                                // create an open space
+                                changeFlag = deleteObstacle(i, j, matrix, size); // attempt to create an open space
+                                MatrixState newMatrix = new MatrixState(matrix, currMatrix.getNumBlocks());
+                                open.add(newMatrix);
+                            } else {
+                                //System.out.println("Maximum number of boxes " + maximumBoxes);
+                                // ensures that we have not exceeded the maximum number of boxes we can have in the game
+                                if (currBoxNum <= maximumBoxes) {
+                                    System.out.println("Creating a box");
+                                    // TODO: also store the exact location of all the boxes
+                                    int numberOfBoxes = currMatrix.getNumBlocks();
+                                    matrix[i][j] = 3;
+                                    currMatrix.incrementNumBlocks();
+                                    changeFlag = true;
+                                    MatrixState newMatrix = new MatrixState(matrix, numberOfBoxes+1);
+                                    open.add(newMatrix); // add the new matrix to the open list
+                                } else {
+                                    changeFlag = deleteObstacle(i, j, matrix, size);
+                                    MatrixState newMatrix = new MatrixState(matrix, currMatrix.getNumBlocks());
+                                    open.add(newMatrix);
+                                }
+                            }
+                        } else {
+                            // do nothing
+                            continue;
+                        }
+                    }
                 }
-        	}
-        	
-        	// handles the case that no changes has been made
-        	while (!changeFlag) {
-				changeFlag = deleteObstacle(mid, mid, matrix, size); // attempt to create an open space
-				MatrixState newMatrix = new MatrixState(matrix, currMatrix.getNumBlocks());
-				open.add(newMatrix);
-        	}
-        	
-        	startTime = System.currentTimeMillis();
+            }
+
+            // handles the case that no changes has been made
+            while (!changeFlag) {
+                changeFlag = deleteObstacle(mid, mid, matrix, size); // attempt to create an open space
+                MatrixState newMatrix = new MatrixState(matrix, currMatrix.getNumBlocks());
+                open.add(newMatrix);
+            }
+
+            startTime = System.currentTimeMillis();
         }
-        System.out.println(closed.size());
-        return closed.get(closed.size()-1).getMatrix();
+
+        int last = closed.size()-1;
+        MatrixState bestMatrix = closed.get(last);
+        int[][] bestState = bestMatrix.getMatrix();
+
+        return bestState;
     }
 
     /**
