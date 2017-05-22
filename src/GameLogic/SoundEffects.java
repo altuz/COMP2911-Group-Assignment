@@ -6,6 +6,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 public class SoundEffects {
+	MediaPlayer music;
 	MediaPlayer thud;
 	MediaPlayer move;
 	MediaPlayer levelcomplete;
@@ -39,6 +40,10 @@ public class SoundEffects {
 		return this.endpoint;
 	}
 	
+	public MediaPlayer getMusic() {
+		return this.music;
+	}
+	
 	public int getEndPoints() {
 		return this.endpoints;
 	}
@@ -55,6 +60,12 @@ public class SoundEffects {
 		this.prev = value;
 	}
 	public SoundEffects() {
+		String file = "music.mp4";
+		Media music = new Media(new File(file).toURI().toString());
+		MediaPlayer mediamusic = new MediaPlayer(music);
+		this.music = mediamusic;
+		mediamusic.setCycleCount(MediaPlayer.INDEFINITE);
+		mediamusic.play();
 		String file1 = "Move.mp4";
 		Media move = new Media(new File(file1).toURI().toString());
 		MediaPlayer mediamove = new MediaPlayer(move);
@@ -75,7 +86,7 @@ public class SoundEffects {
 		Media mouseclicked = new Media(new File(file5).toURI().toString());
 		MediaPlayer mediamouseclicked = new MediaPlayer(mouseclicked);
 		this.mouseclicked = mediamouseclicked;
-		String file6 = "endpoint.mp4";
+		String file6 = "end.mp4";
 		Media endpoint = new Media(new File(file6).toURI().toString());
 		MediaPlayer mediaendpoint = new MediaPlayer(endpoint);
 		this.endpoint = mediaendpoint;
@@ -94,7 +105,6 @@ public class SoundEffects {
 			} else {
 				sound.getMove().play();
 				movecount = state.getMoveCount();
-				System.out.println("prev: " + prev + " endpoint: " + endpoint);
 			}
 		}
 	}
@@ -111,5 +121,33 @@ public class SoundEffects {
 			}
 		}
 		return point;
+	}
+	
+	public void muteSound(MediaPlayer thud, MediaPlayer move, MediaPlayer levelcomplete, 
+			MediaPlayer mousehover, MediaPlayer mouseclicked, MediaPlayer endpoint) {
+		thud.setVolume(0);
+		move.setVolume(0);
+		levelcomplete.setVolume(0);
+		mousehover.setVolume(0);
+		mouseclicked.setVolume(0);
+		endpoint.setVolume(0);
+	}
+	
+	public void unmute(MediaPlayer thud, MediaPlayer move, MediaPlayer levelcomplete, 
+			MediaPlayer mousehover, MediaPlayer mouseclicked, MediaPlayer endpoint) {
+		thud.setVolume(100);
+		move.setVolume(100);
+		levelcomplete.setVolume(100);
+		mousehover.setVolume(100);
+		mouseclicked.setVolume(100);
+		endpoint.setVolume(100);
+	}
+	
+	public void mutemusic(MediaPlayer music) {
+		music.setVolume(0);
+	}
+	
+	public void unmutemusic(MediaPlayer music) {
+		music.setVolume(100);
 	}
 }
