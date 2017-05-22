@@ -1,10 +1,10 @@
 package GameLogic;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 import Definitions.Blocks;
+import java.util.concurrent.ThreadLocalRandom;
+
 /**
  * Created by altuz on 6/05/17.
  */
@@ -12,6 +12,7 @@ public class MazeGenerator {
     private int[][] maze;
     private int[]   player_location;
     private ArrayList<int[]> end_blocks;
+    private final Random random = new Random();
 
     /**
      * CHECK OBJECT TYPE AND CALLS THE RESPECTIVE FUNCTION
@@ -66,22 +67,135 @@ public class MazeGenerator {
      */
     private int[][] generateRandom(Integer size) {
         int padded_size = size + 2;
+        int maximumBoxes = size/2;
         int[][] loc_maze = new int[padded_size][padded_size];
         int[][] act_maze = new int[size][size];
+        
         // initialize
         for(int i = 0; i < size; i++){
             Arrays.fill(act_maze[i], 1);
         }
+        
         // put agent/player in middle
         int mid = (size+1)/2;
         int[] agent = new int[]{ mid, mid };
         act_maze[mid][mid] = Blocks.PLAYER.getVal();
-
+        List<MatrixState> open = new ArrayList<MatrixState>();
+        List<MatrixState> closed = new ArrayList<MatrixState>();
+        MatrixState initMatrix = new MatrixState(act_maze, 0);
+        open.add(initMatrix); // add the initial maze to the open list
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + 2000; // set the end time to be 2 seconds after the current time
+        
+        
+        // loop to randomly generate matrices
+        while (startTime < endTime) {
+        	MatrixState currMatrix = open.remove(0); // remove the first index
+        	int[][] matrix = currMatrix.getMatrix();
+        	boolean changeFlag = false; // a flag to handle if we have made a change
+        	closed.add(currMatrix); // add the matrix to the closed list
+        	
+        	// nested for loop to iterate through the matrix
+        	for (int i = 0 ; i < matrix.length ; i++) {
+                for (int j = 0 ; j < matrix[i].length ; j++) {
+                	// if we find an open space
+                	if (matrix[i][j] == 0) {
+                		// 50/50 probability of making a change
+                		if (random.nextBoolean()) {
+                			// 50/50 probability of creating a blank space or a box
+                			if (random.nextBoolean()) {
+                				// create an open space
+                				changeFlag = deleteObstacle(i, j, matrix, size); // attempt to create an open space
+                				MatrixState newMatrix = new MatrixState(matrix, currMatrix.getNumBlocks());
+            					open.add(newMatrix);
+                			} else {
+                				// ensures that we have not exceeded the maximum number of boxes we can have in the game
+                				if (currMatrix.getNumBlocks() >= maximumBoxes) {
+                					// TODO: also store the exact location of all the boxes
+                					int numberOfBoxes = currMatrix.getNumBlocks();
+                					matrix[i][j] = 3;
+                					currMatrix.incrementNumBlocks();
+                					changeFlag = true;
+                					MatrixState newMatrix = new MatrixState(matrix, numberOfBoxes+1);
+                					open.add(newMatrix); // add the new matrix to the open list
+                				} else {
+                					changeFlag = deleteObstacle(i, j, matrix, size);
+                					MatrixState newMatrix = new MatrixState(matrix, currMatrix.getNumBlocks());
+                					open.add(newMatrix);
+                				}
+                			}
+                		} else {
+                			// do nothing
+                			continue;
+                		}
+                	}
+                }
+        	}
+        	
+        	// handles the case that no changes has been made
+        	while (!changeFlag) {
+				changeFlag = deleteObstacle(mid, mid, matrix, size); // attempt to create an open space
+				MatrixState newMatrix = new MatrixState(matrix, currMatrix.getNumBlocks());
+				open.add(newMatrix);
+        	}
+        	
+        	startTime = System.currentTimeMillis();
+        }
+        
         return loc_maze;
     }
 
-    private void deleteObstacle(int r_idx, int c_idx, int[][] maze){
-        maze[r_idx][c_idx] = Blocks.SPACES.getVal();
+    /**
+     * TODO: Delete an item in the matrix randomly
+     * 
+     * @param r_idx
+     * @param c_idx
+     * @param maze
+     */
+    private boolean deleteObstacle(int r_idx, int c_idx, int[][] maze, int maxSize){
+    	int rowMin, rowMax, columnMin, columnMax;
+    	int attempt = 0;
+    	
+    	// Set the maximum size for row index
+    	if (r_idx == 0) {
+    		rowMin = 0;
+    	} else {
+    		rowMin = r_idx-1;
+    	} 
+    	
+    	if (r_idx == maxSize) {
+    		rowMax = maxSize;
+    	} else {
+    		rowMax = r_idx+1;
+    	}
+    	
+    	// Set the maximum size for column index
+    	if (c_idx == 0) {
+    		columnMin = 0;
+    	} else {
+    		columnMin = c_idx-1;
+    	} 
+    	
+    	if (c_idx == maxSize) {
+    		columnMax = maxSize;
+    	} else {
+    		columnMax = c_idx+1;
+    	}
+    	
+    	// attempts to delete an obstacle 4 times
+    	while (attempt < 8 ) {
+    		int randomRowIdx = ThreadLocalRandom.current().nextInt(rowMin, rowMax + 1); // generates a random row value
+        	int randomColIdx = ThreadLocalRandom.current().nextInt(columnMin, columnMax + 1); // generates a random column value
+        	
+        	if (maze[randomRowIdx][randomColIdx] == -1) {
+        		maze[randomRowIdx][randomColIdx] = 0;
+        	}
+        	
+        	attempt++;
+        	return true;
+    	}
+    	
+        return false;
     }
 
     /**
