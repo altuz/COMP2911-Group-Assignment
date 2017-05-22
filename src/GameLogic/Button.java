@@ -16,7 +16,7 @@ public class Button extends StackPane {
  * Creates a button 
  * @param name button name
  */
-	public Button(String name) {
+	public Button(String name, SoundEffects sound) {
 		//Set text font and color
 		text = new Text(name);
 		//text.setFont(text.getFont().font(15));
@@ -41,6 +41,7 @@ public class Button extends StackPane {
 		btn.setFill(Color.LIGHTGREY);
 		text.setTranslateX(10);
 		text.setFill(Color.BLACK);
+		sound.getMouseHover().play();
 		});
 		
 		setOnMouseExited(event -> {
@@ -48,6 +49,7 @@ public class Button extends StackPane {
 		btn.setFill(Color.BLACK);
 		text.setTranslateX(0);
 		text.setFill(Color.WHITE);
+		sound.getMouseHover().stop();
 		});
 	}
 }

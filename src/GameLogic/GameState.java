@@ -28,6 +28,8 @@ public class GameState{
         this.goal_blocks= level.getGoals();
     }
 
+
+    
     /**
      * Returns true if game is over, false otherwise
      * @author Nicholas Mulianto
@@ -492,4 +494,9 @@ public class GameState{
     public int[][] getMaze() {
         return this.maze;
     }
+    
+    public int getMoveCount() {
+    	return this.move_count;
+    }
+    
 }
