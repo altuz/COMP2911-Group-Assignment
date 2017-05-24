@@ -28,6 +28,13 @@ public class GameState{
         this.goal_blocks= level.getGoals();
     }
 
+    public GameState(int a, int b){
+    	this.move_count = 0;
+        MazeGenerator level = new MazeGenerator(a, b);
+        this.maze       = level.getMaze();
+        this.player_loc = level.getPlayer();
+        this.goal_blocks= level.getGoals();
+    }
 
     
     /**

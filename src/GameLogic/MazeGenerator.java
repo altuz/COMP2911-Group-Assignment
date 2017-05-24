@@ -99,7 +99,7 @@ public class MazeGenerator {
         while(System.currentTimeMillis() <= endTime){
             MazeState m = open_s.poll();
             int roll = rng.nextInt(0, 3);
-            if(roll == 0 && m.getInnNum() > 10 && m.getBoxNum() < box_max) {
+            if(roll == 0 && m.getInnNum() > 7 && m.getBoxNum() < box_max) {
                 // put box
                 for(int i = 0; i < 2; i++){
                     MazeState cp = new MazeState(m.getMat());

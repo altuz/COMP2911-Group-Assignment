@@ -45,7 +45,7 @@ public class graphicsProcessor extends Application{
 		//Object o = "test_maze.txt";
 		Object o = null;
 		//generate game state to display
-		GameState state = new GameState(o); 
+		GameState state = new GameState(8); 
 		sound.setPrev(sound.countEndPoints(state.getMaze()));
 		primaryStage.setResizable(false);
 		//show grid initially
