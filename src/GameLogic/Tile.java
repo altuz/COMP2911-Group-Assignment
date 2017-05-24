@@ -38,6 +38,10 @@ public class Tile extends StackPane{
 			shadow.setFill(generateColour(this.blockType, DARKNESS_FACTOR));
 			//shadow.setTranslateX(x*TILE_SIZE);
 			shadow.setTranslateY(4);
+			if(blockType == -1){
+				shadow.setVisible(false);
+				border.setVisible(false);
+			}
 			
 			getChildren().addAll(shadow, border);
 			setTranslateX(x*TILE_SIZE);
