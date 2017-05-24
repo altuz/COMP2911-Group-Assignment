@@ -40,7 +40,10 @@ public class State {
      * addEnd - insert goal index
      */
     public void setMatrix(int[][] m){ this.matrix = matrixDeepCopy(m); }
-    public void setPlayerLoc(int[] pl){ this.player_location = pl.clone(); }
+    public void setPlayerLoc(int[] pl){ 
+    	this.player_location = new int[]{pl[0], pl[1]};
+    	this.matrix[pl[0]][pl[1]] = 1;
+    }
     public void addBox(int[] bl){ box_locations.add(bl); }
     public void addEnd(int[] el){ end_locations.add(el); }
     public void addAllBox(ArrayList<int[]> bls){
@@ -121,6 +124,10 @@ public class State {
         // hashtable stores the end position of the boxes
         // the key refers to the box's corresponding index in the box_locations arraylist
         Hashtable<Integer, int[]> eloc = new Hashtable<>();
+        // init hashtable
+        for(int i = 0; i < blcp.size(); i++){
+        	eloc.put(i, blcp.get(i));
+        }
         // repeat until max moves or until no boxes can be moved
         for(int i = 0; i < max_move; i++){
             if(queue.isEmpty()) break;
@@ -131,6 +138,7 @@ public class State {
             for(Pushability push : queue){
                 int pushDirs = push.findPushableDirections(this.matrix, reachability);
                 push.setPushableDirs(pushDirs);
+                // System.out.println(pushDirs);
             }
             // sort queue decreasing order of pushability
             // if items have same degree of pushability we randomize the order
@@ -165,6 +173,7 @@ public class State {
             // put new box location to queue
             Pushability new_stuff = new Pushability(n_pos, first.getId());
             queue.add(new_stuff);
+            
         }
         // overlay finished map with original map
         overlayMap(mxcp, blcp, eloc);
@@ -308,7 +317,7 @@ public class State {
                     switch(Blocks.get(this.matrix[y][x])){
                         case END_BOXES:
                             // penalize if BOX already at GOAL by not adding
-                            s--;
+                            //s--;
                             break;
                         case BOXES:
                             s++;
