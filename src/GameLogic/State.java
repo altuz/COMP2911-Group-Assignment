@@ -179,7 +179,6 @@ public class State {
             // put new box location to queue
             Pushability new_stuff = new Pushability(n_pos, first.getId());
             queue.add(new_stuff);
-            
         }
         // overlay finished map with original map
         overlayMap(mxcp, blcp, eloc);
@@ -199,13 +198,16 @@ public class State {
                 if(this.matrix[i][j] == Blocks.BOXES.getVal()) {
                     // for each index (i, j) of the new matrix
                     // if the value in said index is a box, we make that same index in the old matrix an end zone
-                    mx[i][j] += Blocks.END_POINTS.getVal();
+                    // mx[i][j] += Blocks.END_POINTS.getVal();
                 }
             }
         }
         // store end locations
+        // System.out.println(eloc.size());
         for(int i = 0; i < eloc.keySet().size(); i++){
-            end_locations.add(eloc.get(i));
+            int[] j = eloc.get(i);
+            mx[j[0]][j[1]] += Blocks.END_POINTS.getVal();
+            end_locations.add(j);
         }
         this.matrix = mx;
     }
@@ -281,13 +283,16 @@ public class State {
                 if(j < this.matrix.length - 1) neighbours.add(this.matrix[i][j+1]); // check right
                 if(i < 0) neighbours.add(this.matrix[i-1][j]); // check up
                 if(i > this.matrix.length - 1) neighbours.add((this.matrix[i+1][j])); // check down
-                for(Integer k : neighbours)
-                    switch(Blocks.get(k)){
+                for(Integer k : neighbours) {
+                    switch (Blocks.get(k)) {
                         case BOXES:
                         case END_BOXES:
-                        case IMMOVABLES: obstacle++;
-                        default: break;
+                        case IMMOVABLES:
+                            obstacle++;
+                        default:
+                            break;
                     }
+                }
                 TERRAIN += obstacle;
             }
         }
@@ -317,7 +322,6 @@ public class State {
             // such that x_range[0] <= x_range[1], same with y_range
             int[] y_range = (bi_y < bf_y) ? new int[]{ bi_y, bf_y } : new int[]{ bf_y, bi_y };
             int[] x_range = (bi_x < bf_x) ? new int[]{ bi_x, bf_x } : new int[]{ bf_x, bi_x };
-
             for(int y = y_range[0]; y <= y_range[1]; y++){
                 for(int x = x_range[0]; x <= x_range[1]; x++){
                     switch(Blocks.get(this.matrix[y][x])){

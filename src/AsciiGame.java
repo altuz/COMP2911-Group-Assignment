@@ -32,6 +32,7 @@ public class AsciiGame {
     }
 
     public static void print_maze(int[][] maze) {
+        if(maze == null) System.out.println("CRY");
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze[i].length; j++) {
                 System.out.printf("%2d ", maze[i][j]);
