@@ -46,6 +46,11 @@ public class State {
     }
     public void addBox(int[] bl){ box_locations.add(bl); }
     public void addEnd(int[] el){ end_locations.add(el); }
+    public void setEndLocations(ArrayList<int[]> elocs){
+        for(int[] i : elocs){
+            this.end_locations.add(i);
+        }
+    }
     public void addAllBox(ArrayList<int[]> bls){
         for(int[] i : bls) {
             this.matrix[i[0]][i[1]] = Blocks.BOXES.getVal();
@@ -77,7 +82,7 @@ public class State {
         int[][] mxcp = matrixDeepCopy(this.matrix);
         ArrayList<int[]> blcp = blDeepCopy(this.box_locations);
         int[] plcp = new int[]{this.player_location[0], this.player_location[1]};
-        EvalLevel bestLevel = new EvalLevel(null, 0);
+        EvalLevel bestLevel = new EvalLevel(null, 0, null);
         // another copy for 'queue'
         for(int i = 0; i < max_shuffle; i++){
             // shuffle matrix
@@ -91,7 +96,7 @@ public class State {
             // not sure if actually true but paper says its a good assumption
             if(levl > bestLevel.getEval()) {
                 int[][] mcp = matrixDeepCopy(this.matrix);
-                bestLevel = new EvalLevel(mcp, levl);
+                bestLevel = new EvalLevel(mcp, levl, this.end_locations);
             }
             // reinstate original matrix, box location and player location
             // reinitialize end locations
@@ -104,6 +109,7 @@ public class State {
         this.player_location = new int[]{plcp[0], plcp[1]};
         this.matrix = bestLevel.getMx();
         this.value = bestLevel.getEval();
+        this.end_locations = bestLevel.getEnds();
     }
 
     /**
@@ -439,13 +445,21 @@ public class State {
     private class EvalLevel{
         private int[][] mx;
         private double eval;
-        private EvalLevel(int[][] m, double e){
+        private ArrayList<int[]> ends;
+
+        private EvalLevel(int[][] m, double e, ArrayList<int[]> i){
             this.mx = m;
             this.eval = e;
+            this.ends = new ArrayList<int[]>();
+            if(i == null) return;
+            for(int[] j : i){
+                this.ends.add(new int[]{j[0], j[1]});
+            }
         }
 
         private double getEval(){ return this.eval; }
         private int[][] getMx(){ return this.mx; }
+        private ArrayList<int[]> getEnds() { return this.ends; }
     }
 }
 

@@ -156,6 +156,7 @@ public class MazeGenerator {
         this.player_location = new int[]{mid, mid};
         best_ter.setPlayerLoc(new int[]{mid, mid});
         best_ter.shuffleLevel(1000, 50);
+        this.end_blocks = best_ter.getEndLoc();
         return best_ter.getMatrix();
     }
     /**

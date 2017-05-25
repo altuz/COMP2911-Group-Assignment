@@ -11,6 +11,10 @@ public class GameState{
     private int[] player_loc;
     private int[][] maze;
     private ArrayList<int[]> goal_blocks;
+    // circular queue for prev state
+    private State[] prev_states;
+    private int ps_idx;
+    private int ps_size;
     /**
      * Creates a new level and initialize player location.
      * If given an int, randomly generates maze.
@@ -20,8 +24,7 @@ public class GameState{
      * @param o (String or Integer)
      */
     public GameState(Object o) {
-        this.move_count = 0;
-
+        initVars();
         MazeGenerator level = new MazeGenerator(o);
         this.maze       = level.getMaze();
         this.player_loc = level.getPlayer();
@@ -29,14 +32,19 @@ public class GameState{
     }
 
     public GameState(int a, int b){
-    	this.move_count = 0;
+    	initVars();
         MazeGenerator level = new MazeGenerator(a, b);
         this.maze       = level.getMaze();
         this.player_loc = level.getPlayer();
         this.goal_blocks= level.getGoals();
     }
 
-    
+    public void initVars(){
+        this.move_count = 0;
+        this.ps_idx = 0;
+        this.ps_size = 0;
+        this.prev_states = new State[5];
+    }
     /**
      * Returns true if game is over, false otherwise
      * @author Nicholas Mulianto
@@ -50,6 +58,24 @@ public class GameState{
         }
         return true;
     }
+
+    /**
+     * Undoes player move. Move back one state.
+     * Pops the tail of the queue
+     * @author Nicholas Mulianto
+     */
+    public void undo_move(){
+        if(this.ps_size <= 0) return;
+        State prev_state = this.prev_states[this.ps_idx-1];
+        this.maze = prev_state.getMatrix();
+        this.player_loc = prev_state.getPlayerLoc();
+        this.goal_blocks = prev_state.getEndLoc();
+        this.prev_states[this.ps_idx-1] = null;
+        this.ps_idx--;
+        if(this.ps_idx < 0)
+            this.ps_idx = this.prev_states.length - 1;
+        this.ps_size--;
+    }
     /**
      * Moves the player based on direction.
      * Usage: player_move(Movement.UP);
@@ -62,6 +88,11 @@ public class GameState{
      */
     public boolean player_move(Movement dir) {
         boolean suc = false;
+        // create copy of current maze
+        State this_state = new State();
+        this_state.setMatrix(this.maze);
+        this_state.setPlayerLoc(this.player_loc);
+        this_state.setEndLocations(this.goal_blocks);
         switch (dir) {
             case UP:
                 suc = move_up();
@@ -76,8 +107,19 @@ public class GameState{
                 suc = move_right();
                 break;
         }
-        if (suc) this.move_count += 1;
-        return false;
+        // if move successful add prev state to queue for undoing
+        if (suc) {
+            this.move_count += 1;
+            // add current state over to queue
+            this.prev_states[this.ps_idx] = this_state;
+            // increment queue and wraps around
+            this.ps_idx++;
+            this.ps_idx = this.ps_idx % this.prev_states.length;
+            // increase size and cap it
+            if(this.ps_size < this.prev_states.length)
+                this.ps_size++;
+        }
+        return suc;
     }
 
     /**
@@ -196,7 +238,6 @@ public class GameState{
                 }
 
         }
-
         return true;
     }
 
