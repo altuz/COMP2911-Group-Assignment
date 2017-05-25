@@ -6,7 +6,7 @@ import Definitions.Blocks;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Created by altuz on 6/05/17.
+ * Created by Nicholas Mulianto on 6/05/17.
  */
 public class MazeGenerator {
     private int[][] maze;
@@ -18,7 +18,8 @@ public class MazeGenerator {
      * CHECK OBJECT TYPE AND CALLS THE RESPECTIVE FUNCTION
      * Generate maze randomly if given an Integer
      * Generate maze from file if given a String
-     * TODO: Random Generation
+     * @author Nicholas Mulianto
+     * TODONE: Random Generation
      * @param o
      */
     public MazeGenerator(Object o) {
@@ -32,6 +33,7 @@ public class MazeGenerator {
     }
     /**
      * Second constructor, randomly generates size * size matrix with lim_box boxes
+     * @author Nicholas Mulianto
      * @param size
      * @param lim_box
      */
@@ -40,62 +42,82 @@ public class MazeGenerator {
         this.maze = randomGen((Integer) size, lim_box);
     }
     /**
-     * 
+     * Randomly generates a maze.
+     * Starts with maze full of walls.
+     * Randomly remove walls and put box.
+     * Returns best map after 2 seconds of search
+     * @author Nicholas Mulianto
+     * @precondition size >= 0 and 0 < box_max < size^2
      * @param size
      * @param box_max
      * @return
      */
     private int[][] randomGen(int size, int box_max){
+    	// one RNG to rule them all
         ThreadLocalRandom rng = ThreadLocalRandom.current();
+        // player starts at mid
         int mid = (size+1)/2;
+        // initialize maze to all walls except player at mid
         int[][] initial_maze = new int[size][size];
         for(int i = 0; i < size; i++)
             Arrays.fill(initial_maze[i], -1);
         initial_maze[mid][mid] = 1;
-
+        // unbounded open set for search
+        // can grow to enormous size but due to timeout it will be fine
         PriorityQueue<MazeState> open_s = new PriorityQueue<>(new Comparator<MazeState>() {
             @Override
             public int compare(MazeState o1, MazeState o2) {
+            	// prioritize state with most boxes, else randomize
                 if(o1.getBoxNum() - o2.getBoxNum() == 0)  return rng.nextInt(-1, 2);
                 else {
                     return o2.getBoxNum() - o1.getBoxNum();
                 }
             }
         });
+        // placeholder for 'best state'
+        // there are two metrics that determines the 'quality' of the maze.
+        // terrain and congestion. 
+        // congestion can only be calculated after the shuffling phase, so we just base the quality on terrain here.
         State best_ter = new State();
-
+        // initial mazestate
         MazeState init = new MazeState(initial_maze);
+        // finds adjacent neighbours of the first movable cell
         for(int j = 0; j < 2; j++){
             int k = (j == 0) ? 1 : -1;
-            // idx0 = right, idx1 = bottom, idx2 = left, idx3 = top
-            init.expandBorder(new int[]{ mid, mid + k});
-            init.expandBorder(new int[]{ mid + k, mid});
+            init.expandBorder(new int[]{ mid, mid + k });
+            init.expandBorder(new int[]{ mid + k, mid });
         }
-
         open_s.add(init);
-
+        // for timeout
         long startTime = System.currentTimeMillis();
         long endTime = startTime + 2000; // set the end time to be 1 seconds after the current time
+        // loops as long as system time < endTime
         while(System.currentTimeMillis() <= endTime){
             MazeState m = open_s.poll();
-            int roll = rng.nextInt(0, 3);
-            if(roll == 0 && m.getInnNum() > 7 && m.getBoxNum() < box_max) {
+            // roll dice to see if we should insert box or remove wall
+            // only put box when we have more than 1 explored box
+            int roll = rng.nextInt(0, 5);
+            if(roll == 0 && m.getInnNum() > 0 && m.getBoxNum() < box_max) {
                 // put box
                 for(int i = 0; i < 2; i++){
+                	// make a copy of current maze
                     MazeState cp = new MazeState(m.getMat());
                     cp.setBorders(m.getBorders());
                     cp.setBoxes(m.getBoxes());
                     cp.setInner(m.getInner());
+                    // find a random empty space to place box
                     int[] box_idx = m.randomInner(rng);
                     cp.removeInner(box_idx);
                     cp.addBox(box_idx);
                     open_s.add(cp);
-                    
+                    // only consider if theres enough boxes
                     if(cp.getBoxNum() == box_max){
                     	State ns = new State();
                         ns.setMatrix(cp.getMat());
                         ns.addAllBox(cp.getBoxes());
+                        // compute terrain
                         ns.compute_terrain();
+                        // compare with current best
                         if(ns.getTerrain() > best_ter.getTerrain()) best_ter = ns;
                     }
                 }
@@ -103,23 +125,28 @@ public class MazeGenerator {
             else {
                 // spawn two copies
                 for(int i = 0; i < 2; i++) {
+                	// make copy of current maze
                     MazeState cp = new MazeState(m.getMat());
                     cp.setBorders(m.getBorders());
                     cp.setBoxes(m.getBoxes());
                     cp.setInner(m.getInner());
+                    // find a random border/wall to remove
                     int[] del_idx = m.randomBorder(rng);
+                    // finds adjacent walls of new movable block (expanding border)
                     ArrayList<int[]> aj = getAdjacent(del_idx, size, cp.getMat());
                     for(int[] adjacent : aj)
                         cp.expandBorder(adjacent);
                     cp.removeBorder(del_idx);
                     cp.addInner(del_idx);
                     open_s.add(cp);
-
+                    // only consider if theres enough boxes
                     if(cp.getBoxNum() == box_max){
                     	State ns = new State();
                         ns.setMatrix(cp.getMat());
                         ns.addAllBox(cp.getBoxes());
+                        // compute terrain
                         ns.compute_terrain();
+                        // compare with current best
                         if(ns.getTerrain() > best_ter.getTerrain()) best_ter = ns;
                     }
                 }
@@ -131,7 +158,14 @@ public class MazeGenerator {
         best_ter.shuffleLevel(1000, 50);
         return best_ter.getMatrix();
     }
-
+    /**
+     * Given an empty cell, finds adjacent walls
+     * @precondition idx[0] and idx[1] is within bounds of m[][]
+     * @param idx
+     * @param lim
+     * @param m
+     * @return
+     */
     private ArrayList<int[]> getAdjacent(int[] idx, int lim, int[][] m){
         int y = idx[0], x = idx[1];
         ArrayList<int[]> adj = new ArrayList<>();
@@ -323,30 +357,7 @@ public class MazeGenerator {
 
         return loc_maze;
     }
-    private int[][] wallPadding(int[][] lvl){
-        int padded_size = lvl.length + 2;
-        System.out.println(lvl.length);
-        int[][] padded_maze = new int[padded_size][padded_size];
-        for(int i = 0; i < lvl.length; i++){
-            for(int j = 0; j < lvl.length; j++){
-                padded_maze[i+1][j+1] = lvl[i][j];
-                switch (Blocks.get(padded_maze[i+1][j+1])) {
-                    case PLAYER: player_location = new int[] {i + 1, j + 1};
-                        break;
-                    case END_POINTS:
-                    case END_PLAYER:
-                    case END_BOXES: end_blocks.add(new int[] {i + 1, j + 1});
-                    default:
-                }
-            }
-        }
-        for(int i = 0; i < padded_size; i++){
-            padded_maze[0][i] = padded_maze[i][0] = Blocks.IMMOVABLES.getVal();
-            padded_maze[padded_size-1][i] = padded_maze[i][padded_size-1] = Blocks.IMMOVABLES.getVal();
-        }
-
-        return padded_maze;
-    }
+    
     /**
      * Returns maze
      * @return
