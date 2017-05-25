@@ -79,7 +79,13 @@ public class MazeState {
         int i = j.nextInt(0, inner.size());
         Iterator<int[]> it = inner.iterator();
         while(true){
-            if(i == 0) return it.next();
+            if(i == 0) {
+                int[] n = it.next();
+                if(this.box_loc.contains(n)){
+                    return randomInner(j);
+                }
+                return n;
+            }
             it.next();
             i--;
         }
