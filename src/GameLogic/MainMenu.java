@@ -22,7 +22,9 @@ public class MainMenu extends Parent {
 	private VBox soundoption;
 	private VBox start;
 	private VBox levelcomplete;
+	private VBox tutorial;
 	private Pane grid;
+	private Pane tutorialmap;
 
 /**
  * VBox of screen for level complete
@@ -31,6 +33,15 @@ public class MainMenu extends Parent {
 	public VBox getLevelComplete() {
 		return this.levelcomplete;
 	}
+
+/**
+ * Pane of screen for tutorial
+ * @return tutorial
+ */
+	public VBox getTutorial() {
+		return this.tutorial;
+	}	
+	
 /**
  * GridPane of map GUI
  * @return grid 
@@ -75,11 +86,22 @@ public class MainMenu extends Parent {
 	}
 	
 /**
+ * GridPane of map GUI
+ * @return grid 
+ */
+	public Pane getTutorialMap() {
+		return this.tutorialmap;
+	}
+/**
  * This constructor sets up the	Buttons and various VBox which acts as screens for main menus 
  * @param W width
  * @param H height
  */
 	public MainMenu(int W, int H, SoundEffects s) {
+		Pane tutorialmap = new Pane();
+		tutorialmap.setPrefSize(W, H);
+		tutorialmap.setBackground(new Background(new BackgroundFill(Color.rgb(255, 242, 204), CornerRadii.EMPTY, Insets.EMPTY)));
+		this.tutorialmap = tutorialmap;
 		Pane grid = new Pane();
 		grid.setPrefSize(W, H);
 		grid.setVisible(false);
@@ -94,7 +116,7 @@ public class MainMenu extends Parent {
 		optionmenu.setPrefSize(W, H);
 		optionmenu.setAlignment(Pos.CENTER);
 		
-		this.gameoptions = new VBox(5);
+		this.gameoptions = new VBox(6);
 		gameoptions.setPrefSize(W, H);
 		gameoptions.setAlignment(Pos.CENTER);
 		
@@ -106,17 +128,21 @@ public class MainMenu extends Parent {
 		levelcomplete.setPrefSize(W, H);
 		levelcomplete.setAlignment(Pos.CENTER);
 		
+		this.tutorial = new VBox(1);
+		tutorial.setBackground(new Background(new BackgroundFill(Color.rgb(255, 242, 204), CornerRadii.EMPTY, Insets.EMPTY)));
+		getChildren().add(tutorial);
+		tutorial.setVisible(false);
 		//TODO
 		Button newgame = new Button("NEW GAME", s);
 		newgame.setOnMouseClicked(event -> {
 			getChildren().add(start);
 			getChildren().add(gameoptions);
-			//getChildren().add(option);
 			getChildren().add(levelcomplete);
+			
 			levelcomplete.setVisible(false);
 			levelcomplete.requestFocus();
 			gameoptions.setVisible(false);
-			//option.setVisible(false);
+
 			start.setOpacity(1);
 			start.requestFocus();
 			main.setVisible(false);
@@ -127,18 +153,14 @@ public class MainMenu extends Parent {
 			s.getMouseClicked().play();
 		});
 		
-		Button tutorial = new Button("TUTORIAL", s);
-		tutorial.setOnMousePressed(event -> {
-			s.getMouseClicked().stop();
-			s.getMouseClicked().play();
-		});
-		
+		Button tutorialbtn = new Button("TUTORIAL", s);
 		Button resume = new Button("RESUME", s);
 		resume.setOnMouseClicked(event -> {
 			gameoptions.setVisible(false);
 			start.setOpacity(1);
 		});
-		resume.setOnMousePressed(event -> {
+		
+		tutorialbtn.setOnMousePressed(event -> {
 			s.getMouseClicked().stop();
 			s.getMouseClicked().play();
 		});
@@ -153,7 +175,6 @@ public class MainMenu extends Parent {
 			s.getMouseClicked().stop();
 			s.getMouseClicked().play();
 		});
-		
 		//Does not work yet
 
 		Button sound = new Button("SOUND", s);
@@ -161,17 +182,20 @@ public class MainMenu extends Parent {
 			gameoptions.setVisible(false);
 			getChildren().add(soundoption);
 		});
+		
 		sound.setOnMousePressed(event -> {
 			s.getMouseClicked().stop();
 			s.getMouseClicked().play();
 		});
 		
-		Button mainmenu = new Button("MAIN MENU", s);
+		Button mainmenu = new Button("HOME", s);
 		mainmenu.setOnMouseClicked(event -> {
 			main.setVisible(true);
 			getChildren().remove(gameoptions);
 			getChildren().remove(start);
+			getChildren().remove(levelcomplete);
 		});
+
 		mainmenu.setOnMousePressed(event -> {
 			s.getMouseClicked().stop();
 			s.getMouseClicked().play();
@@ -181,6 +205,7 @@ public class MainMenu extends Parent {
 		back.setOnMouseClicked(event -> {
 			gameoptions.setVisible(true);
 		});
+		
 		back.setOnMousePressed(event -> {
 			s.getMouseClicked().stop();
 			s.getMouseClicked().play();
@@ -192,13 +217,18 @@ public class MainMenu extends Parent {
 			getChildren().remove(optionmenu);
 		});
 		
+		back1.setOnMousePressed(event -> {
+			s.getMouseClicked().stop();
+			s.getMouseClicked().play();
+		});
+		
 		Button back2 = new Button("BACK", s);
 		back2.setOnMouseClicked(event -> {
 			gameoptions.setVisible(true);
 			getChildren().remove(soundoption);
 		});
-		
-		back1.setOnMousePressed(event -> {
+
+		back2.setOnMousePressed(event -> {
 			s.getMouseClicked().stop();
 			s.getMouseClicked().play();
 		});
@@ -207,7 +237,7 @@ public class MainMenu extends Parent {
 		exit.setOnMouseClicked(event -> {
 			System.exit(0);
 		});
-		
+
 		exit.setOnMousePressed(event -> {
 			s.getMouseClicked().stop();
 			s.getMouseClicked().play();
@@ -217,7 +247,7 @@ public class MainMenu extends Parent {
 		exit1.setOnMouseClicked(event -> {
 			System.exit(0);
 		});
-		
+
 		exit1.setOnMousePressed(event -> {
 			s.getMouseClicked().stop();
 			s.getMouseClicked().play();
@@ -242,37 +272,44 @@ public class MainMenu extends Parent {
 			s.getMouseClicked().stop();
 			s.getMouseClicked().play();
 		});
-			
+		
 		//TODO
 		Button restart = new Button("RESTART", s);
-		restart.setOnMousePressed(event -> {
-			s.getMouseClicked().stop();
-			s.getMouseClicked().play();
-		});
-		
 		Button cont = new Button("CONTINUE", s);
-		cont.setOnMousePressed(event -> {
+		Button undo = new Button("UNDO", s);
+		Button soundoff = new Button("SOUND OFF", s);
+		soundoff.setOnMousePressed(event -> {
 			s.getMouseClicked().stop();
 			s.getMouseClicked().play();
 		});
-
-		Button soundoff = new Button("SOUND OFF", s);
 		Button soundon = new Button("SOUND ON", s);
+		soundon.setOnMousePressed(event -> {
+			s.getMouseClicked().stop();
+			s.getMouseClicked().play();
+		});
 		soundoff.setOnMousePressed(event -> {
 			optionmenu.getChildren().remove(back1);
 			optionmenu.getChildren().remove(soundoff);
 			optionmenu.getChildren().addAll(soundon, back1);
-			s.unmute(s.getThud(), s.getMove(), s.getLevelComplete(), s.getMouseHover(), s.getMouseClicked(), s.getEndPoint());
+			s.unmute(s.getThud(), s.getMove(), s.getLevelComplete(), s.getMouseHover(), s.getMouseClicked());
 		});
 		soundon.setOnMousePressed(event -> {
 			optionmenu.getChildren().remove(back1);
 			optionmenu.getChildren().remove(soundon);
 			optionmenu.getChildren().addAll(soundoff, back1);
-			s.muteSound(s.getThud(), s.getMove(), s.getLevelComplete(), s.getMouseHover(), s.getMouseClicked(), s.getEndPoint());
+			s.muteSound(s.getThud(), s.getMove(), s.getLevelComplete(), s.getMouseHover(), s.getMouseClicked());
 		});
 	
 		Button musicon = new Button("MUSIC ON", s);
+		musicon.setOnMousePressed(event -> {
+			s.getMouseClicked().stop();
+			s.getMouseClicked().play();
+		});
 		Button musicoff = new Button("MUSIC OFF", s);
+		musicoff.setOnMousePressed(event -> {
+			s.getMouseClicked().stop();
+			s.getMouseClicked().play();
+		});
 		musicon.setOnMousePressed(event -> {
 			int k = 0;
 			for(int i = 0; i < optionmenu.getChildren().size(); i++) {
@@ -319,22 +356,38 @@ public class MainMenu extends Parent {
 		});
 		
 		Button soundoff1 = new Button("SOUND OFF", s);
+		soundoff1.setOnMousePressed(event -> {
+			s.getMouseClicked().stop();
+			s.getMouseClicked().play();
+		});
 		Button soundon1 = new Button("SOUND ON", s);
+		soundon1.setOnMousePressed(event -> {
+			s.getMouseClicked().stop();
+			s.getMouseClicked().play();
+		});
 		soundoff1.setOnMousePressed(event -> {
 			soundoption.getChildren().remove(back2);
 			soundoption.getChildren().remove(soundoff1);
 			soundoption.getChildren().addAll(soundon1, back2);
-			s.unmute(s.getThud(), s.getMove(), s.getLevelComplete(), s.getMouseHover(), s.getMouseClicked(), s.getEndPoint());
+			s.unmute(s.getThud(), s.getMove(), s.getLevelComplete(), s.getMouseHover(), s.getMouseClicked());
 		});
 		soundon1.setOnMousePressed(event -> {
 			soundoption.getChildren().remove(back2);
 			soundoption.getChildren().remove(soundon1);
 			soundoption.getChildren().addAll(soundoff1, back2);
-			s.muteSound(s.getThud(), s.getMove(), s.getLevelComplete(), s.getMouseHover(), s.getMouseClicked(), s.getEndPoint());
+			s.muteSound(s.getThud(), s.getMove(), s.getLevelComplete(), s.getMouseHover(), s.getMouseClicked());
 		});
 	
 		Button musicon1 = new Button("MUSIC ON", s);
+		musicon1.setOnMousePressed(event -> {
+			s.getMouseClicked().stop();
+			s.getMouseClicked().play();
+		});
 		Button musicoff1 = new Button("MUSIC OFF", s);
+		musicoff1.setOnMousePressed(event -> {
+			s.getMouseClicked().stop();
+			s.getMouseClicked().play();
+		});
 		musicon1.setOnMousePressed(event -> {
 			int k = 0;
 			for(int i = 0; i < soundoption.getChildren().size(); i++) {
@@ -380,12 +433,13 @@ public class MainMenu extends Parent {
 			
 		});
 		
-		main.getChildren().addAll(newgame, options1, tutorial, exit);
+		main.getChildren().addAll(newgame, options1, tutorialbtn, exit);
 		optionmenu.getChildren().addAll(musicon, soundon, back1);
-		gameoptions.getChildren().addAll(resume, restart, sound, mainmenu, exit2);
+		gameoptions.getChildren().addAll(resume, undo, restart, sound, mainmenu, exit2);
 		soundoption.getChildren().addAll(musicon1, soundon1, back2);
 		levelcomplete.getChildren().addAll(cont);
 		start.getChildren().addAll(grid);
+		tutorial.getChildren().addAll(tutorialmap);
 		start.setOnKeyPressed (event -> {
 			if(event.getCode() == KeyCode.ESCAPE) {
 				if(gameoptions.isVisible() == false && soundoption.isVisible() == false && levelcomplete.isVisible() == false) {
@@ -401,4 +455,3 @@ public class MainMenu extends Parent {
 	}
 
 }
-
