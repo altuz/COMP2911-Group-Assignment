@@ -28,6 +28,8 @@ public class graphicsProcessor extends Application{
 		launch(args);
 	}
 
+	public static boolean isTutorial = false;
+	public static int tutLevel = 1;
 	/**
 	 * Function below generates a window and grid based on 
 	 * the maze generated in the backend
@@ -46,6 +48,7 @@ public class graphicsProcessor extends Application{
 		//generate game state to display
 		GameState state = new GameState(o);
 		GameState statecp = new GameState(state);
+		GameState tut = new GameState(o);
 		primaryStage.setResizable(false);
 		//show grid initially
         primaryStage.setScene(scene);
@@ -85,6 +88,13 @@ public class graphicsProcessor extends Application{
     				}
         		}
         		if(state.game_over() == true) {
+        			if(isTutorial){
+        				tutLevel++;
+        				if(tutLevel > 4) {
+        					tutLevel = 1;
+        					isTutorial = false;
+        				}
+        			}
         			mainmenu.getLevelComplete().setVisible(true);
         			mainmenu.getStart().setOpacity(0.5);
         		}   
@@ -109,43 +119,39 @@ public class graphicsProcessor extends Application{
         	createMap(state.getMaze(), mainmenu.getGrid(), primaryStage);
         });
         
+        // level complete
         mainmenu.getLevelComplete().getChildren().get(0).setOnMouseClicked(event ->{
-        	GameState next_level = new GameState(10, 6);
-        	state.stateCp(next_level);
-        	statecp.stateCp(next_level);
-        	createMap(state.getMaze(), mainmenu.getGrid(), primaryStage);
-        	//mainmenu.getLevelComplete().getChildren().get(0).setVisible(false);
-        	mainmenu.getLevelComplete().setVisible(false);
-			mainmenu.getStart().setOpacity(1);
+        	if(isTutorial == false) {
+        		GameState next_level = new GameState(10, 6);
+            	state.stateCp(next_level);
+            	statecp.stateCp(next_level);
+            	createMap(state.getMaze(), mainmenu.getGrid(), primaryStage);
+            	//mainmenu.getLevelComplete().getChildren().get(0).setVisible(false);
+            	mainmenu.getLevelComplete().setVisible(false);
+    			mainmenu.getStart().setOpacity(1);
+        	}
+        	else {
+        		GameState next_level = new GameState("src/TutorialMaps/map"+tutLevel+".txt");
+        		state.stateCp(next_level);
+            	statecp.stateCp(next_level);
+            	createMap(state.getMaze(),mainmenu.getGrid(),primaryStage);
+            	mainmenu.getLevelComplete().setVisible(false);
+    			mainmenu.getStart().setOpacity(1);
+        	}
         });
         
 		mainmenu.getMain().getChildren().get(2).setOnMouseClicked(event -> {
-			mainmenu.getMain().setVisible(false);
-			mainmenu.getTutorial().setVisible(true);
-			mainmenu.getTutorialMap().setVisible(true);
-			mainmenu.getTutorial().requestFocus();
-			createMap(tutorial.getSampleMap(), mainmenu.getTutorialMap(), primaryStage);
-			sound.soundEffects(state, sound);
+			isTutorial = true;
+			GameState next_level = new GameState("src/TutorialMaps/map1.txt");
+        	state.stateCp(next_level);
+        	statecp.stateCp(next_level);
+        	mainmenu.startFunc();
+        	createMap(state.getMaze(),mainmenu.getGrid(),primaryStage);
 		});
 		
-		mainmenu.getTutorial().setOnKeyPressed(event -> {
-        	if(mainmenu.getStart().getOpacity() == 1) {
-        		if(event.getCode() != KeyCode.ESCAPE) {
-        			//call backend functions to change the maze array depending on key pressed
-        			if(event.getCode() == KeyCode.RIGHT) {
-        				state.player_move(Movement.RIGHT);
-        			} else if(event.getCode() == KeyCode.LEFT) {
-        				state.player_move(Movement.LEFT);
-        			} else if(event.getCode() == KeyCode.UP) {
-        				state.player_move(Movement.UP);
-        			} else if (event.getCode() == KeyCode.DOWN) {
-        				state.player_move(Movement.DOWN);
-        			} else if(event.getCode() == KeyCode.E){
-        				state.undo_move();
-        			}
-        			createMap(tutorial.getSampleMap(), mainmenu.getTutorialMap(), primaryStage);
-        		}
-        	}
+		mainmenu.getGameOptions().getChildren().get(4).setOnMouseClicked(event -> {
+			mainmenu.homeFunc();
+			isTutorial = false;
 		});
 		
 	}

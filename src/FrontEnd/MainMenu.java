@@ -136,7 +136,6 @@ public class MainMenu extends Parent {
 		
 		this.tutorial = new VBox(1);
 		tutorial.setBackground(new Background(new BackgroundFill(Color.rgb(255, 242, 204), CornerRadii.EMPTY, Insets.EMPTY)));
-		getChildren().add(tutorial);
 		tutorial.setVisible(false);
 		//TODO
 		Button newgame = new Button("NEW GAME", s);
@@ -195,12 +194,7 @@ public class MainMenu extends Parent {
 		});
 		
 		Button mainmenu = new Button("HOME", s);
-		mainmenu.setOnMouseClicked(event -> {
-			main.setVisible(true);
-			getChildren().remove(gameoptions);
-			getChildren().remove(start);
-			getChildren().remove(levelcomplete);
-		});
+
 
 		mainmenu.setOnMousePressed(event -> {
 			s.getMouseClicked().stop();
@@ -472,5 +466,26 @@ public class MainMenu extends Parent {
 		start.setOpacity(1);
 		start.requestFocus();
 		main.setVisible(false);
+	}
+	
+	public void startTut(){
+		getChildren().add(tutorial);
+		getChildren().add(gameoptions);
+		getChildren().add(levelcomplete);
+		
+		levelcomplete.setVisible(false);
+		levelcomplete.requestFocus();
+		gameoptions.setVisible(false);
+
+		tutorial.setOpacity(1);
+		tutorial.requestFocus();
+		main.setVisible(false);
+	}
+	
+	public void homeFunc(){
+		main.setVisible(true);
+		getChildren().remove(gameoptions);
+		getChildren().remove(start);
+		getChildren().remove(levelcomplete);
 	}
 }
