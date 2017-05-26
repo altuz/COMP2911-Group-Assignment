@@ -23,10 +23,7 @@ public class Button extends StackPane {
 	public Text getText() {
 		return this.text;
 	}
-	
-	public void setText(Text name) {
-		this.text = name;
-	}
+
 	public Button(String name, SoundEffects sound) {
 		//Set text font and color
 		text = new Text(name);

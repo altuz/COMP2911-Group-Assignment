@@ -124,7 +124,7 @@ public class MainMenu extends Parent {
 		soundoption.setPrefSize(W, H);
 		soundoption.setAlignment(Pos.CENTER);
 		
-		this.levelcomplete = new VBox(1);
+		this.levelcomplete = new VBox(2);
 		levelcomplete.setPrefSize(W, H);
 		levelcomplete.setAlignment(Pos.CENTER);
 		
@@ -140,12 +140,10 @@ public class MainMenu extends Parent {
 			getChildren().add(levelcomplete);
 			
 			levelcomplete.setVisible(false);
-			levelcomplete.requestFocus();
 			gameoptions.setVisible(false);
-
+			main.setVisible(false);
 			start.setOpacity(1);
 			start.requestFocus();
-			main.setVisible(false);
 		});
 		
 		newgame.setOnMousePressed(event -> {
@@ -199,8 +197,21 @@ public class MainMenu extends Parent {
 			getChildren().remove(start);
 			getChildren().remove(levelcomplete);
 		});
+		
+		Button mainmenu1 = new Button("HOME", s);
+		mainmenu.setOnMouseClicked(event -> {
+			main.setVisible(true);
+			getChildren().remove(levelcomplete);
+			getChildren().remove(gameoptions);
+			getChildren().remove(start);
+		});
 
 		mainmenu.setOnMousePressed(event -> {
+			s.getMouseClicked().stop();
+			s.getMouseClicked().play();
+		});
+		
+		mainmenu1.setOnMousePressed(event -> {
 			s.getMouseClicked().stop();
 			s.getMouseClicked().play();
 		});
@@ -453,7 +464,7 @@ public class MainMenu extends Parent {
 		optionmenu.getChildren().addAll(musicon, soundon, back1);
 		gameoptions.getChildren().addAll(resume, undo, restart, sound, mainmenu, exit2);
 		soundoption.getChildren().addAll(musicon1, soundon1, back2);
-		levelcomplete.getChildren().addAll(cont);
+		levelcomplete.getChildren().addAll(cont, mainmenu1);
 		start.getChildren().addAll(grid);
 		tutorial.getChildren().addAll(tutorialmap);
 		start.setOnKeyPressed (event -> {

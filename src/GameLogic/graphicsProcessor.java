@@ -83,6 +83,9 @@ public class graphicsProcessor extends Application{
         		if(completedlevel(state.getMaze(), sound) == true) {
         			mainmenu.getLevelComplete().setVisible(true);
         			mainmenu.getStart().setOpacity(0.5);
+        			mainmenu.getLevelComplete().requestFocus();
+        			mainmenu.getLevelComplete().getChildren().get(1).requestFocus();
+        			
         		}   
         	}
         });
