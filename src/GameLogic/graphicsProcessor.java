@@ -41,12 +41,10 @@ public class graphicsProcessor extends Application{
 		SoundEffects sound = new SoundEffects();
 		MainMenu mainmenu = new MainMenu(W, H, sound);
 		Scene scene = new Scene(mainmenu, W, H);
-		//create string object containing file name
-		//Object o = "test_maze.txt";
+		MapBuilder tutorial = new MapBuilder();
 		Object o = null;
 		//generate game state to display
 		GameState state = new GameState(10, 6); 
-		sound.setPrev(sound.countEndPoints(state.getMaze()));
 		primaryStage.setResizable(false);
 		//show grid initially
         primaryStage.setScene(scene);
@@ -72,10 +70,9 @@ public class graphicsProcessor extends Application{
         				state.player_move(Movement.DOWN);
         			}
         			createMap(state.getMaze(),mainmenu.getGrid(),primaryStage);
-        			sound.setEndPoints(sound.countEndPoints(state.getMaze()));
-        			sound.soundEffects(state, sound, sound.getPrev(), sound.getEndPoints());
+        			sound.soundEffects(state, sound);
         		} else {
-    				if(mainmenu.getGameOptions().isVisible() == false && /*option.isVisible() == false &&*/
+    				if(mainmenu.getGameOptions().isVisible() == false && 
     						mainmenu.getLevelComplete().isVisible() == false) {
     					mainmenu.getGameOptions().setVisible(true);
     					mainmenu.getStart().setOpacity(0.5);
@@ -90,7 +87,37 @@ public class graphicsProcessor extends Application{
         	}
         });
         
-
+        mainmenu.getGameOptions().getChildren().get(1).setOnMouseClicked(event -> {
+        	state.undo_move();
+        	createMap(state.getMaze(), mainmenu.getGrid(), primaryStage);
+        });
+		mainmenu.getMain().getChildren().get(2).setOnMouseClicked(event -> {
+			mainmenu.getMain().setVisible(false);
+			mainmenu.getTutorial().setVisible(true);
+			mainmenu.getTutorialMap().setVisible(true);
+			mainmenu.getTutorial().requestFocus();
+			createMap(tutorial.getSampleMap(), mainmenu.getTutorialMap(), primaryStage);
+			sound.soundEffects(state, sound);
+		});
+		
+		mainmenu.getTutorial().setOnKeyPressed(event -> {
+        	if(mainmenu.getStart().getOpacity() == 1) {
+        		if(event.getCode() != KeyCode.ESCAPE) {
+        			//call backend functions to change the maze array depending on key pressed
+        			if(event.getCode() == KeyCode.RIGHT) {
+        				state.player_move(Movement.RIGHT);
+        			} else if(event.getCode() == KeyCode.LEFT) {
+        				state.player_move(Movement.LEFT);
+        			} else if(event.getCode() == KeyCode.UP) {
+        				state.player_move(Movement.UP);
+        			} else if (event.getCode() == KeyCode.DOWN) {
+        				state.player_move(Movement.DOWN);
+        			}
+        			createMap(tutorial.getSampleMap(), mainmenu.getTutorialMap(), primaryStage);
+        		}
+        	}
+		});
+		
 	}
 
 	/**
@@ -132,4 +159,5 @@ public class graphicsProcessor extends Application{
     	sound.getLevelComplete().play();
 		return true;
 	}
+	
 }	
