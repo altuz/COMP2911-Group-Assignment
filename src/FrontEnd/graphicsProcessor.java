@@ -43,12 +43,10 @@ public class graphicsProcessor extends Application{
 		SoundEffects sound = new SoundEffects();
 		MainMenu mainmenu = new MainMenu(W, H, sound);
 		Scene scene = new Scene(mainmenu, W, H);
-		MapBuilder tutorial = new MapBuilder();
 		Object o = "hack";
 		//generate game state to display
 		GameState state = new GameState(o);
 		GameState statecp = new GameState(state);
-		GameState tut = new GameState(o);
 		primaryStage.setResizable(false);
 		//show grid initially
         primaryStage.setScene(scene);
