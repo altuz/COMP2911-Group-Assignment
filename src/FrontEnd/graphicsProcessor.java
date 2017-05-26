@@ -86,6 +86,7 @@ public class graphicsProcessor extends Application{
     				}
         		}
         		if(state.game_over() == true) {
+        			sound.getLevelComplete().stop();
         	    	sound.getLevelComplete().play();
         			if(isTutorial){
         				tutLevel++;
