@@ -122,7 +122,7 @@ public class MainMenu extends Parent {
 		this.start = new VBox(1);
 		start.setBackground(new Background(new BackgroundFill(Color.rgb(255, 242, 204), CornerRadii.EMPTY, Insets.EMPTY)));
 		this.main = new VBox(4);
-		String file = "src/Resources/Background.png";
+		String file = "src/Resources/Background.gif";
 		Image image = new Image(new File(file).toURI().toString());
 		main.setBackground(new Background(new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, 
 				BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
