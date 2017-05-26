@@ -104,7 +104,7 @@ public class graphicsProcessor extends Application{
         });
         
         mainmenu.getLevelComplete().getChildren().get(0).setOnMouseClicked(event ->{
-        	GameState next_level = new GameState(8, 6);
+        	GameState next_level = new GameState(10, 6);
         	state.stateCp(next_level);
         	statecp.stateCp(next_level);
         	createMap(state.getMaze(), mainmenu.getGrid(), primaryStage);
