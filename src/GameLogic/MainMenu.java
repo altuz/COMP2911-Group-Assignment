@@ -154,13 +154,18 @@ public class MainMenu extends Parent {
 		});
 		
 		Button tutorialbtn = new Button("TUTORIAL", s);
+		tutorialbtn.setOnMousePressed(event -> {
+			s.getMouseClicked().stop();
+			s.getMouseClicked().play();
+		});
+		
 		Button resume = new Button("RESUME", s);
 		resume.setOnMouseClicked(event -> {
 			gameoptions.setVisible(false);
 			start.setOpacity(1);
 		});
 		
-		tutorialbtn.setOnMousePressed(event -> {
+		resume.setOnMousePressed(event -> {
 			s.getMouseClicked().stop();
 			s.getMouseClicked().play();
 		});
@@ -275,8 +280,20 @@ public class MainMenu extends Parent {
 		
 		//TODO
 		Button restart = new Button("RESTART", s);
+		restart.setOnMousePressed(event -> {
+			s.getMouseClicked().stop();
+			s.getMouseClicked().play();
+		});
 		Button cont = new Button("CONTINUE", s);
+		cont.setOnMousePressed(event -> {
+			s.getMouseClicked().stop();
+			s.getMouseClicked().play();
+		});
 		Button undo = new Button("UNDO", s);
+		undo.setOnMousePressed(event -> {
+			s.getMouseClicked().stop();
+			s.getMouseClicked().play();
+		});
 		Button soundoff = new Button("SOUND OFF", s);
 		soundoff.setOnMousePressed(event -> {
 			s.getMouseClicked().stop();

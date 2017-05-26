@@ -97,7 +97,6 @@ public class graphicsProcessor extends Application{
 			mainmenu.getTutorialMap().setVisible(true);
 			mainmenu.getTutorial().requestFocus();
 			createMap(tutorial.getSampleMap(), mainmenu.getTutorialMap(), primaryStage);
-			sound.soundEffects(state, sound);
 		});
 		
 		mainmenu.getTutorial().setOnKeyPressed(event -> {
@@ -114,6 +113,7 @@ public class graphicsProcessor extends Application{
         				state.player_move(Movement.DOWN);
         			}
         			createMap(tutorial.getSampleMap(), mainmenu.getTutorialMap(), primaryStage);
+        			sound.soundEffects(state, sound);
         		}
         	}
 		});
