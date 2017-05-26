@@ -98,6 +98,11 @@ public class graphicsProcessor extends Application{
         	createMap(state.getMaze(), mainmenu.getGrid(), primaryStage);
         });
         
+        mainmenu.getGameOptions().getChildren().get(2).setOnMouseClicked(event -> {
+        	state.stateCp(statecp);	
+        	createMap(state.getMaze(), mainmenu.getGrid(), primaryStage);
+        });
+        
         
 		mainmenu.getMain().getChildren().get(2).setOnMouseClicked(event -> {
 			mainmenu.getMain().setVisible(false);
