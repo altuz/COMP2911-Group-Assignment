@@ -1,5 +1,5 @@
-import GameLogic.GameState;
-import GameLogic.State;
+import BackEnd.GameState;
+import BackEnd.State;
 
 /**
  * Created by altuz on 20/05/17.

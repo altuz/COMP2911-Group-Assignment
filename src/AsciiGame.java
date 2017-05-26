@@ -1,7 +1,8 @@
 import Definitions.Movement;
-import GameLogic.*;
 
 import java.util.Scanner;
+
+import BackEnd.*;
 
 /**
  * Created by altuz on 8/05/17.
