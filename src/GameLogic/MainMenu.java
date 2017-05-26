@@ -180,7 +180,6 @@ public class MainMenu extends Parent {
 			s.getMouseClicked().stop();
 			s.getMouseClicked().play();
 		});
-		//Does not work yet
 
 		Button sound = new Button("SOUND", s);
 		sound.setOnMouseClicked(event -> {

@@ -100,8 +100,8 @@ public class graphicsProcessor extends Application{
 		});
 		
 		mainmenu.getTutorial().setOnKeyPressed(event -> {
-        	if(mainmenu.getStart().getOpacity() == 1) {
-        		if(event.getCode() != KeyCode.ESCAPE) {
+        	if(mainmenu.getTutorial().isVisible() == true) {
+        		if(event.getCode() != KeyCode.DELETE && event.getCode() != KeyCode.BACK_SPACE) {
         			//call backend functions to change the maze array depending on key pressed
         			if(event.getCode() == KeyCode.RIGHT) {
         				state.player_move(Movement.RIGHT);
@@ -114,6 +114,9 @@ public class graphicsProcessor extends Application{
         			}
         			createMap(tutorial.getSampleMap(), mainmenu.getTutorialMap(), primaryStage);
         			sound.soundEffects(state, sound);
+        		} else if(event.getCode() == KeyCode.DELETE || event.getCode() == KeyCode.BACK_SPACE) {
+        			mainmenu.getTutorial().setVisible(false);
+        			mainmenu.getMain().setVisible(true);
         		}
         	}
 		});
