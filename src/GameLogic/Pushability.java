@@ -51,17 +51,29 @@ public class Pushability {
             // idx0 = right, idx1 = bottom, idx2 = left, idx3 = top
             adj_tile[j*2] = new int[]{ y, x + k};
             adj_tile[j*2 + 1] = new int[]{ y + k, x};
+            // check boundary
             if(x + k < 0 || x + k > matrix.length - 1)
                 adjacent[j*2] = false;
+            // check boundary of other side
             else if(x - k < 0 || x - k > matrix.length - 1)
                 adjacent[j*2] = false;
-            else if(reachability[y][x + k] != 1 || reachability[y][x - k] == -1)
+            // check if side reachable
+            else if(reachability[y][x + k] != 1)
                 adjacent[j*2] = false;
+            // check if other side movable
+            else if(matrix[y][x - k] != 0)
+                adjacent[j*2] = false;
+            // check boundary
             if(y + k < 0 || y + k > matrix.length - 1)
                 adjacent[j*2 + 1] = false;
+            // check boundary of other side
             else if(y - k < 0 || y - k > matrix.length - 1)
                 adjacent[j*2 + 1] = false;
-            else if(reachability[y + k][x] != 1 || reachability[y - k][x] == -1)
+            // check if side reachable
+            else if(reachability[y + k][x] != 1)
+                adjacent[j*2 + 1] = false;
+            // check if other side movable
+            else if(matrix[y - k][x] != 0)
                 adjacent[j*2 + 1] = false;
         }
         int ret = 0;

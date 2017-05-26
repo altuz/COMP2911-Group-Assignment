@@ -9,7 +9,8 @@ import java.util.Scanner;
 public class AsciiGame {
     public static void main(String args[]) {
         // change the path to the test_maze as necessary.
-        GameState test_game = new GameState("/home/altuz/IdeaProjects/COMP2911-Group-Assignment/src/GameLogic/test_maze");
+        // System.out.println("mod neg = " + (-1 % 5));
+        GameState test_game = new GameState(8, 4);
         Scanner in = new Scanner(System.in);
         print_maze(test_game.getMaze());
         while (!test_game.game_over()) {
@@ -20,6 +21,7 @@ public class AsciiGame {
                 case 'A' : test_game.player_move(Movement.LEFT); break;
                 case 'S' : test_game.player_move(Movement.DOWN); break;
                 case 'D' : test_game.player_move(Movement.RIGHT); break;
+                case 'E' : test_game.undo_move(); break;
             }
             System.out.println("--------------------------------------------------------------------------");
             System.out.println("----------------------------MOVING PLAYER---------------------------------");
@@ -30,6 +32,7 @@ public class AsciiGame {
     }
 
     public static void print_maze(int[][] maze) {
+        if(maze == null) System.out.println("CRY");
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze[i].length; j++) {
                 System.out.printf("%2d ", maze[i][j]);
