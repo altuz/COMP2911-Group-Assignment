@@ -183,11 +183,11 @@ public class GameState{
          * -> 4 == player is currently standing on an end point
          */
         int playerCurrPosition = this.maze[rowNum][columnNum];
-        System.out.println("The player is: " + playerCurrPosition);
+        // System.out.println("The player is: " + playerCurrPosition);
 
         switch (blockNum) {
             case -1: // the block above is an immovable object
-                System.out.println("Movement Err: Cannot move UP because there is an immovable object");
+                // System.out.println("Movement Err: Cannot move UP because there is an immovable object");
                 return false;
             case 0: // the block above is an empty tile
                 if (playerCurrPosition == 1) { // handles the case that the player is standing on an empty tile
@@ -205,8 +205,8 @@ public class GameState{
             case 2: // the block above is a box
                 boxRowNum = (axis) ? new_row : rowNum;
                 boxColNum = (axis) ? columnNum : new_col;
-                System.out.printf("new_row = %d, new_col = %d\n", new_row, new_col);
-                System.out.printf("boxRowNum = %d, boxColNum = %d\n", boxRowNum, boxColNum);
+                // System.out.printf("new_row = %d, new_col = %d\n", new_row, new_col);
+                // System.out.printf("boxRowNum = %d, boxColNum = %d\n", boxRowNum, boxColNum);
                 // handles the case that the box movement is successful
                 if (moveBox(boxRowNum, boxColNum, dir)) {
                     if (playerCurrPosition == 1) {
@@ -281,10 +281,10 @@ public class GameState{
         int colNum = currLocation[1];
         // Handles the case that the player wants to move out of bounds
         if(rowNum == 0) {
-            System.out.println("Movement Err: Moving out of bounds");
+            // System.out.println("Movement Err: Moving out of bounds");
             return false;
         }
-        System.out.printf("new_row = %d, new_col = %d\n", rowNum-1, colNum);
+        // System.out.printf("new_row = %d, new_col = %d\n", rowNum-1, colNum);
 
         return move_player(rowNum-1, colNum, Movement.UP);
     }
@@ -304,10 +304,10 @@ public class GameState{
         // Handles the case that the player wants to move out of bounds
         // To counter null pointer exceptions
         if(rowNum >= rowMax) {
-            System.out.println("Movement Err: Moving out of bounds");
+            // System.out.println("Movement Err: Moving out of bounds");
             return false;
         }
-        System.out.printf("new_row = %d, new_col = %d\n", rowNum+1, colNum);
+        // System.out.printf("new_row = %d, new_col = %d\n", rowNum+1, colNum);
         return move_player(rowNum+1, colNum, Movement.DOWN);
     }
 
@@ -325,10 +325,10 @@ public class GameState{
         // Handles the case that the player wants to move out of bounds
         // To counter null pointer exceptions
         if(colNum == 0) {
-            System.out.println("Movement Err: Moving out of bounds");
+            // System.out.println("Movement Err: Moving out of bounds");
             return false;
         }
-        System.out.printf("new_row = %d, new_col = %d\n", rowNum, colNum-1);
+        // System.out.printf("new_row = %d, new_col = %d\n", rowNum, colNum-1);
         return move_player(rowNum, colNum-1, Movement.LEFT);
     }
 
@@ -349,10 +349,10 @@ public class GameState{
         // Handles the case that the player wants to move out of bounds
         // To counter null pointer exceptions
         if(colNum+1 >= colMax) {
-            System.out.println("Movement Err: Moving out of bounds");
+            // System.out.println("Movement Err: Moving out of bounds");
             return false;
         }
-        System.out.printf("new_row = %d, new_col = %d\n", rowNum, colNum+1);
+        // System.out.printf("new_row = %d, new_col = %d\n", rowNum, colNum+1);
         return move_player(rowNum, colNum+1, Movement.RIGHT);
     }
 
@@ -416,7 +416,7 @@ public class GameState{
                             return true;
                         }
                     case 5: // the tile above is another box
-                        System.out.println("Movement Err: Box cannot move UPWARDS because there is another box"); // For testing - comment out if needed
+                        // System.out.println("Movement Err: Box cannot move UPWARDS because there is another box"); // For testing - comment out if needed
                         return false;
                 }
                 
@@ -426,14 +426,14 @@ public class GameState{
                 
                 // check if the box is moving out of bounds
                 if (boxRowNum >= rowsMax) {
-                    System.out.println("Movement Err: Moving out of bounds");
+                    // System.out.println("Movement Err: Moving out of bounds");
                     return false;
                 }
                 
                 tile = this.maze[boxRowNum+1][boxColumnNum]; // gets the tile that is below the box
                 switch (tile) {
                     case -1: // the case that the tile is an immovable object
-                        System.out.println("Movement Err: Box cannot move DOWN because there is an immoavable object"); // For testing - comment out if needed
+                        // System.out.println("Movement Err: Box cannot move DOWN because there is an immoavable object"); // For testing - comment out if needed
                         return false;
                     case 0: // the case that the tile is an empty object
                         if (boxType == 2) { // default case
@@ -446,7 +446,7 @@ public class GameState{
                             return true;
                         }
                     case 2: // the tile below is another box
-                        System.out.println("Movement Err: Box cannot move DOWN because there is another box"); // For testing - comment out if needed
+                        // System.out.println("Movement Err: Box cannot move DOWN because there is another box"); // For testing - comment out if needed
                         return false;
                     case 3: // the tile above is an end point
                         this.maze[boxRowNum+1][boxColumnNum] = 5; // marks that a box is on an end point
@@ -460,14 +460,14 @@ public class GameState{
                             return true;
                         }
                     case 5: // the tile above is another box
-                        System.out.println("Movement Err: Box cannot move UPWARDS because there is another box"); // For testing - comment out if needed
+                        // System.out.println("Movement Err: Box cannot move UPWARDS because there is another box"); // For testing - comment out if needed
                         return false;
                 }
                 break;
             case LEFT: // moving the box left - reduce the column number by 1
                 // check if the box is moving out of bounds
                 if (boxColumnNum == 0) {
-                    System.out.println("Movement Err: Moving out of bounds");
+                    // System.out.println("Movement Err: Moving out of bounds");
                     return false;
                 }
                 
@@ -475,7 +475,7 @@ public class GameState{
                 
                 switch (tile) {
                     case -1: // case that the tile to the left of the box is an immoavable object
-                        System.out.println("Movement Err: Box cannot move LEFT because there is an immoavable object"); // For testing - comment out if needed
+                        // System.out.println("Movement Err: Box cannot move LEFT because there is an immoavable object"); // For testing - comment out if needed
                         return false;
                     case 0: // case tile to the left is an empty object
                         if (boxType == 2) { // default case
@@ -488,7 +488,7 @@ public class GameState{
                             return true;
                         }
                     case 2: // the tile to the left is another box
-                        System.out.println("Movement Err: Box cannot move LEFT because there is another box"); // For testing - comment out if needed
+                        // System.out.println("Movement Err: Box cannot move LEFT because there is another box"); // For testing - comment out if needed
                         return false;
                     case 3: // the tile to the left is an end point
                         this.maze[boxRowNum][boxColumnNum-1] = 5; // marks that a box is on an end point
@@ -502,7 +502,7 @@ public class GameState{
                             return true;
                         }
                     case 5: // the tile to the left is another box
-                        System.out.println("Movement Err: Box cannot move LEFT because there is another box"); // For testing - comment out if needed
+                        // System.out.println("Movement Err: Box cannot move LEFT because there is another box"); // For testing - comment out if needed
                         return false;
                 }
                 break;
@@ -510,7 +510,7 @@ public class GameState{
                 int colsMax = this.maze[0].length; // gets the maximum column length
                 
                 if (boxColumnNum >= colsMax) {
-                    System.out.println("Movement Err: Moving out of bounds");
+                    // System.out.println("Movement Err: Moving out of bounds");
                     return false;
                 }
                 
@@ -518,7 +518,7 @@ public class GameState{
                 
                 switch(tile) {
                     case -1: // case that the tile to the left of the box is an immoavable object
-                        System.out.println("Movement Err: Box cannot move LEFT because there is an immoavable object"); // For testing - comment out if needed
+                        // System.out.println("Movement Err: Box cannot move LEFT because there is an immoavable object"); // For testing - comment out if needed
                         return false;
                     case 0: //case tile to the right is an empty object
                         if (boxType == 2) { // default case
@@ -531,7 +531,7 @@ public class GameState{
                             return true;
                         }
                     case 2: // the tile to the right is another box
-                        System.out.println("Movement Err: Box cannot move RIGHT because there is another box"); // For testing - comment out if needed
+                        // System.out.println("Movement Err: Box cannot move RIGHT because there is another box"); // For testing - comment out if needed
                         return false;
                     case 3: // the tile to the right is an end point
                         this.maze[boxRowNum][boxColumnNum+1] = 5; // marks that a box is on an end point
@@ -545,7 +545,7 @@ public class GameState{
                             return true;
                         }
                     case 5: // the tile to the right is a box on an end point
-                        System.out.println("Movement Err: Box cannot move RIGHT because there is another box"); // For testing - comment out if needed
+                        // System.out.println("Movement Err: Box cannot move RIGHT because there is another box"); // For testing - comment out if needed
                         return false;
                 }
         }
