@@ -114,6 +114,7 @@ public class GameState{
         if (suc) {
             this.move_count += 1;
             // add current state over to queue
+            if(this.ps_idx == this.prev_states.length) this.ps_idx = 0;
             this.prev_states[this.ps_idx] = this_state;
             // increment queue and wraps around
             this.ps_idx++;

@@ -40,13 +40,16 @@ public class State {
     public void setMatrix(int[][] m){ this.matrix = matrixDeepCopy(m); }
     public void setPlayerLoc(int[] pl){ 
     	this.player_location = new int[]{pl[0], pl[1]};
-    	this.matrix[pl[0]][pl[1]] = 1;
+    	if(this.matrix[pl[0]][pl[1]] == 4) 
+    		this.matrix[pl[0]][pl[1]] = 4;
+    	else 
+    		this.matrix[pl[0]][pl[1]] = 1;
     }
     public void addBox(int[] bl){ box_locations.add(bl); }
     public void addEnd(int[] el){ end_locations.add(el); }
     public void setEndLocations(ArrayList<int[]> elocs){
         for(int[] i : elocs){
-            this.end_locations.add(i);
+            this.end_locations.add( new int[]{ i[0], i[1] } );
         }
     }
     public void addAllBox(ArrayList<int[]> bls){
@@ -176,6 +179,7 @@ public class State {
             this.player_location = o_pos;
             // put new box location to queue
             Pushability new_stuff = new Pushability(n_pos, first.getId());
+            eloc.put(new_stuff.getId(), new_stuff.getPos());
             queue.add(new_stuff);
         }
         // overlay finished map with original map
@@ -324,8 +328,8 @@ public class State {
                 for(int x = x_range[0]; x <= x_range[1]; x++){
                 	if(this.matrix[y][x] > Blocks.END_BOXES.getVal()) {
                 		for(int z = 0; z< this.end_locations.size(); z++){
-                			System.out.printf("(%d, %d)\n", this.end_locations.get(i)[0], this.end_locations.get(i)[1]);
-                			System.out.printf("(%d, %d)\n", this.box_locations.get(i)[0], this.box_locations.get(i)[1]);
+                			System.out.printf("(%d, %d)\n", this.end_locations.get(z)[0], this.end_locations.get(z)[1]);
+                			System.out.printf("(%d, %d)\n", this.box_locations.get(z)[0], this.box_locations.get(z)[1]);
                 		}
                 	}
                     switch(Blocks.get(this.matrix[y][x])){

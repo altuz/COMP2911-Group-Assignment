@@ -81,7 +81,7 @@ public class MazeState {
         while(true){
             if(i == 0) {
                 int[] n = it.next();
-                if(this.box_loc.contains(n)){
+                if(blContains(n)){
                     return randomInner(j);
                 }
                 return n;
@@ -89,5 +89,13 @@ public class MazeState {
             it.next();
             i--;
         }
+    }
+    
+    public boolean blContains(int[] n){
+    	for(int[] i : this.box_loc){
+    		if(i[0] == n[0] && i[1] == n[1])
+    			return true;
+    	}
+    	return false;
     }
 }

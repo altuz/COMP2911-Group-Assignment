@@ -140,7 +140,6 @@ public class MainMenu extends Parent {
 		//TODO
 		Button newgame = new Button("NEW GAME", s);
 		newgame.setOnMouseClicked(event -> {
-			game = new GameState(8, 6);
 			getChildren().add(start);
 			getChildren().add(gameoptions);
 			getChildren().add(levelcomplete);
