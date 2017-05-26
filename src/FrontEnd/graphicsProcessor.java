@@ -43,7 +43,7 @@ public class graphicsProcessor extends Application{
 		SoundEffects sound = new SoundEffects();
 		MainMenu mainmenu = new MainMenu(W, H, sound);
 		Scene scene = new Scene(mainmenu, W, H);
-		Object o = "hack";
+		Object o = "src/Resources/hack";
 		//generate game state to display
 		GameState state = new GameState(o);
 		GameState statecp = new GameState(state);

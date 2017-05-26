@@ -43,29 +43,29 @@ public class SoundEffects {
 		this.movecount = newcount;
 	}
 	public SoundEffects() {
-		String file = "music.mp4";
+		String file = "src/Resources/music.mp4";
 		Media music = new Media(new File(file).toURI().toString());
 		MediaPlayer mediamusic = new MediaPlayer(music);
 		this.music = mediamusic;
 		mediamusic.setCycleCount(MediaPlayer.INDEFINITE);
 		mediamusic.play();
-		String file1 = "Move.mp4";
+		String file1 = "src/Resources/Move.mp4";
 		Media move = new Media(new File(file1).toURI().toString());
 		MediaPlayer mediamove = new MediaPlayer(move);
 		this.move = mediamove;
-		String file2 = "Thump.mp4";
+		String file2 = "src/Resources/Thump.mp4";
 		Media thud = new Media(new File(file2).toURI().toString());
 		MediaPlayer mediathud = new MediaPlayer(thud);
 		this.thud = mediathud;
-		String file3 = "LevelComplete.mp4";
+		String file3 = "src/Resources/LevelComplete.mp4";
 		Media levelcomplete = new Media(new File(file3).toURI().toString());
 		MediaPlayer medialevelcomplete = new MediaPlayer(levelcomplete);
 		this.levelcomplete = medialevelcomplete;
-		String file4 = "mousehover.mp4";
+		String file4 = "src/Resources/mousehover.mp4";
 		Media mousehover = new Media(new File(file4).toURI().toString());
 		MediaPlayer mediamousehover = new MediaPlayer(mousehover);
 		this.mousehover = mediamousehover;
-		String file5 = "mouseclicked.mp4";
+		String file5 = "src/Resources/mouseclicked.mp4";
 		Media mouseclicked = new Media(new File(file5).toURI().toString());
 		MediaPlayer mediamouseclicked = new MediaPlayer(mouseclicked);
 		this.mouseclicked = mediamouseclicked;
