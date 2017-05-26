@@ -460,4 +460,17 @@ public class MainMenu extends Parent {
 		getChildren().addAll(main);
 	}
 
+	public void startFunc(){
+		getChildren().add(start);
+		getChildren().add(gameoptions);
+		getChildren().add(levelcomplete);
+		
+		levelcomplete.setVisible(false);
+		levelcomplete.requestFocus();
+		gameoptions.setVisible(false);
+
+		start.setOpacity(1);
+		start.requestFocus();
+		main.setVisible(false);
+	}
 }

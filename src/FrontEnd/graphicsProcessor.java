@@ -42,9 +42,9 @@ public class graphicsProcessor extends Application{
 		MainMenu mainmenu = new MainMenu(W, H, sound);
 		Scene scene = new Scene(mainmenu, W, H);
 		MapBuilder tutorial = new MapBuilder();
-		Object o = null;
+		Object o = "hack";
 		//generate game state to display
-		GameState state = new GameState(10, 6);
+		GameState state = new GameState(o);
 		GameState statecp = new GameState(state);
 		primaryStage.setResizable(false);
 		//show grid initially
@@ -53,7 +53,6 @@ public class graphicsProcessor extends Application{
         if(mainmenu.getStart().isVisible() == true) {
         	mainmenu.getGrid().setVisible(true);
         	createMap(state.getMaze(),mainmenu.getGrid(),primaryStage);
-        	
         }
 
         //control mechanism, takes keybaord events in the form of up,down,left,right keys only
@@ -92,6 +91,13 @@ public class graphicsProcessor extends Application{
         	}
         });
         
+        mainmenu.getMain().getChildren().get(0).setOnMouseClicked(event -> {
+        	GameState next_level = new GameState(10, 6);
+        	state.stateCp(next_level);
+        	statecp.stateCp(next_level);
+        	mainmenu.startFunc();
+        	createMap(state.getMaze(),mainmenu.getGrid(),primaryStage);
+        });
         
         mainmenu.getGameOptions().getChildren().get(1).setOnMouseClicked(event -> {
         	state.undo_move();
