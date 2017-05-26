@@ -322,6 +322,12 @@ public class State {
             int[] x_range = (bi_x < bf_x) ? new int[]{ bi_x, bf_x } : new int[]{ bf_x, bi_x };
             for(int y = y_range[0]; y <= y_range[1]; y++){
                 for(int x = x_range[0]; x <= x_range[1]; x++){
+                	if(this.matrix[y][x] > Blocks.END_BOXES.getVal()) {
+                		for(int z = 0; z< this.end_locations.size(); z++){
+                			System.out.printf("(%d, %d)\n", this.end_locations.get(i)[0], this.end_locations.get(i)[1]);
+                			System.out.printf("(%d, %d)\n", this.box_locations.get(i)[0], this.box_locations.get(i)[1]);
+                		}
+                	}
                     switch(Blocks.get(this.matrix[y][x])){
                         case END_BOXES:
                             // penalize if BOX already at GOAL by not adding

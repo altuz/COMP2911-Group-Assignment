@@ -66,14 +66,17 @@ public class GameState{
      */
     public void undo_move(){
         if(this.ps_size <= 0) return;
+        if(this.ps_idx == 0) this.ps_idx = this.prev_states.length;
+        System.out.println(this.ps_idx);
+        System.out.println(this.ps_size);
         State prev_state = this.prev_states[this.ps_idx-1];
         this.maze = prev_state.getMatrix();
         this.player_loc = prev_state.getPlayerLoc();
         this.goal_blocks = prev_state.getEndLoc();
         this.prev_states[this.ps_idx-1] = null;
         this.ps_idx--;
-        if(this.ps_idx < 0)
-            this.ps_idx = this.prev_states.length - 1;
+        if(this.ps_idx == 0)
+            this.ps_idx = this.prev_states.length;
         this.ps_size--;
     }
     /**

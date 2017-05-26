@@ -68,6 +68,8 @@ public class graphicsProcessor extends Application{
         				state.player_move(Movement.UP);
         			} else if (event.getCode() == KeyCode.DOWN) {
         				state.player_move(Movement.DOWN);
+        			} else if(event.getCode() == KeyCode.E){
+        				state.undo_move();
         			}
         			createMap(state.getMaze(),mainmenu.getGrid(),primaryStage);
         			sound.soundEffects(state, sound);
@@ -80,12 +82,13 @@ public class graphicsProcessor extends Application{
     					sound.getMouseClicked().play();
     				}
         		}
-        		if(completedlevel(state.getMaze(), sound) == true) {
+        		if(state.game_over() == true) {
         			mainmenu.getLevelComplete().setVisible(true);
         			mainmenu.getStart().setOpacity(0.5);
         		}   
         	}
         });
+        
         
         mainmenu.getGameOptions().getChildren().get(1).setOnMouseClicked(event -> {
         	state.undo_move();
@@ -112,6 +115,8 @@ public class graphicsProcessor extends Application{
         				state.player_move(Movement.UP);
         			} else if (event.getCode() == KeyCode.DOWN) {
         				state.player_move(Movement.DOWN);
+        			} else if(event.getCode() == KeyCode.E){
+        				state.undo_move();
         			}
         			createMap(tutorial.getSampleMap(), mainmenu.getTutorialMap(), primaryStage);
         		}

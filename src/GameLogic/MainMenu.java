@@ -25,7 +25,11 @@ public class MainMenu extends Parent {
 	private VBox tutorial;
 	private Pane grid;
 	private Pane tutorialmap;
-
+	private GameState game;
+	
+	public GameState getGame(){
+		return this.game;
+	}
 /**
  * VBox of screen for level complete
  * @return levelcomplete
@@ -98,6 +102,7 @@ public class MainMenu extends Parent {
  * @param H height
  */
 	public MainMenu(int W, int H, SoundEffects s) {
+		this.game = null;
 		Pane tutorialmap = new Pane();
 		tutorialmap.setPrefSize(W, H);
 		tutorialmap.setBackground(new Background(new BackgroundFill(Color.rgb(255, 242, 204), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -135,6 +140,7 @@ public class MainMenu extends Parent {
 		//TODO
 		Button newgame = new Button("NEW GAME", s);
 		newgame.setOnMouseClicked(event -> {
+			game = new GameState(8, 6);
 			getChildren().add(start);
 			getChildren().add(gameoptions);
 			getChildren().add(levelcomplete);
