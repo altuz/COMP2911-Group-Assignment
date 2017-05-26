@@ -48,9 +48,9 @@ public class Button extends StackPane {
 		//Button animation when mouse hovers <--- need to change/edit this for keyboard
 		setOnMouseEntered(event -> {
 			btn.setTranslateX(8);
-			btn.setFill(Color.LIGHTGREY);
+			btn.setFill(Color.BLACK);
 			text.setTranslateX(10);
-			text.setFill(Color.BLACK);
+			text.setFill(Color.rgb((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255)));
 			sound.getMouseHover().play();
 		});
 		
