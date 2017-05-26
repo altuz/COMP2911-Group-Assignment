@@ -86,6 +86,7 @@ public class graphicsProcessor extends Application{
     				}
         		}
         		if(state.game_over() == true) {
+        	    	sound.getLevelComplete().play();
         			if(isTutorial){
         				tutLevel++;
         				if(tutLevel > 4) {
@@ -113,8 +114,10 @@ public class graphicsProcessor extends Application{
         });
         
         mainmenu.getGameOptions().getChildren().get(2).setOnMouseClicked(event -> {
-        	state.stateCp(statecp);	
+        	state.stateCp(statecp);
+        	mainmenu.getStart().setOpacity(1);
         	createMap(state.getMaze(), mainmenu.getGrid(), primaryStage);
+        	mainmenu.getGameOptions().setVisible(false);
         });
         
         // level complete
@@ -124,7 +127,6 @@ public class graphicsProcessor extends Application{
             	state.stateCp(next_level);
             	statecp.stateCp(next_level);
             	createMap(state.getMaze(), mainmenu.getGrid(), primaryStage);
-            	//mainmenu.getLevelComplete().getChildren().get(0).setVisible(false);
             	mainmenu.getLevelComplete().setVisible(false);
     			mainmenu.getStart().setOpacity(1);
         	}
@@ -148,6 +150,11 @@ public class graphicsProcessor extends Application{
 		});
 		
 		mainmenu.getGameOptions().getChildren().get(4).setOnMouseClicked(event -> {
+			mainmenu.homeFunc();
+			isTutorial = false;
+		});
+		
+		mainmenu.getLevelComplete().getChildren().get(1).setOnMouseClicked(event -> {
 			mainmenu.homeFunc();
 			isTutorial = false;
 		});
@@ -190,7 +197,6 @@ public class graphicsProcessor extends Application{
 				}
 			}
 		}
-    	sound.getLevelComplete().play();
 		return true;
 	}
 	

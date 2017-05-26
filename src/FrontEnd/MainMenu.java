@@ -1,12 +1,19 @@
 package FrontEnd;
+import java.io.File;
+
 import BackEnd.GameState;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -115,6 +122,10 @@ public class MainMenu extends Parent {
 		this.start = new VBox(1);
 		start.setBackground(new Background(new BackgroundFill(Color.rgb(255, 242, 204), CornerRadii.EMPTY, Insets.EMPTY)));
 		this.main = new VBox(4);
+		String file = "Background.png";
+		Image image = new Image(new File(file).toURI().toString());
+		main.setBackground(new Background(new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, 
+				BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 		main.setPrefSize(W, H);
 		main.setAlignment(Pos.CENTER);
 		
@@ -130,14 +141,14 @@ public class MainMenu extends Parent {
 		soundoption.setPrefSize(W, H);
 		soundoption.setAlignment(Pos.CENTER);
 		
-		this.levelcomplete = new VBox(1);
+		this.levelcomplete = new VBox(2);
 		levelcomplete.setPrefSize(W, H);
 		levelcomplete.setAlignment(Pos.CENTER);
 		
 		this.tutorial = new VBox(1);
 		tutorial.setBackground(new Background(new BackgroundFill(Color.rgb(255, 242, 204), CornerRadii.EMPTY, Insets.EMPTY)));
 		tutorial.setVisible(false);
-		//TODO
+		
 		Button newgame = new Button("NEW GAME", s);
 		newgame.setOnMouseClicked(event -> {
 			getChildren().add(start);
@@ -159,6 +170,10 @@ public class MainMenu extends Parent {
 		});
 		
 		Button tutorialbtn = new Button("TUTORIAL", s);
+		tutorialbtn.setOnMousePressed(event -> {
+			s.getMouseClicked().stop();
+			s.getMouseClicked().play();
+		});
 		Button resume = new Button("RESUME", s);
 		resume.setOnMouseClicked(event -> {
 			gameoptions.setVisible(false);
@@ -180,8 +195,7 @@ public class MainMenu extends Parent {
 			s.getMouseClicked().stop();
 			s.getMouseClicked().play();
 		});
-		//Does not work yet
-
+		
 		Button sound = new Button("SOUND", s);
 		sound.setOnMouseClicked(event -> {
 			gameoptions.setVisible(false);
@@ -194,9 +208,13 @@ public class MainMenu extends Parent {
 		});
 		
 		Button mainmenu = new Button("HOME", s);
-
-
 		mainmenu.setOnMousePressed(event -> {
+			s.getMouseClicked().stop();
+			s.getMouseClicked().play();
+		});
+		
+		Button mainmenu1 = new Button("HOME", s);
+		mainmenu1.setOnMousePressed(event -> {
 			s.getMouseClicked().stop();
 			s.getMouseClicked().play();
 		});
@@ -273,10 +291,21 @@ public class MainMenu extends Parent {
 			s.getMouseClicked().play();
 		});
 		
-		//TODO
 		Button restart = new Button("RESTART", s);
+		restart.setOnMousePressed(event -> {
+			s.getMouseClicked().stop();
+			s.getMouseClicked().play();
+		});
 		Button cont = new Button("CONTINUE", s);
+		cont.setOnMousePressed(event -> {
+			s.getMouseClicked().stop();
+			s.getMouseClicked().play();
+		});
 		Button undo = new Button("UNDO", s);
+		undo.setOnMousePressed(event -> {
+			s.getMouseClicked().stop();
+			s.getMouseClicked().play();
+		});
 		Button soundoff = new Button("SOUND OFF", s);
 		soundoff.setOnMousePressed(event -> {
 			s.getMouseClicked().stop();
@@ -437,7 +466,7 @@ public class MainMenu extends Parent {
 		optionmenu.getChildren().addAll(musicon, soundon, back1);
 		gameoptions.getChildren().addAll(resume, undo, restart, sound, mainmenu, exit2);
 		soundoption.getChildren().addAll(musicon1, soundon1, back2);
-		levelcomplete.getChildren().addAll(cont);
+		levelcomplete.getChildren().addAll(cont, mainmenu1);
 		start.getChildren().addAll(grid);
 		tutorial.getChildren().addAll(tutorialmap);
 		start.setOnKeyPressed (event -> {
